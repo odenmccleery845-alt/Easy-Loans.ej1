@@ -16,7 +16,7 @@ const fetch = require('node-fetch');
 const crypto = require('crypto');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // ============================================
 // TELEGRAM CONFIG (from environment only)
@@ -51,7 +51,6 @@ app.use('/api/', apiLimiter);
 // HELPERS
 // ============================================
 function generateReference() {
-    // MM-XXXXXX (6 alphanumeric chars)
     const raw = crypto.randomBytes(4).toString('hex').toUpperCase().slice(0, 6);
     return `MM-${raw}`;
 }
@@ -64,7 +63,6 @@ function escapeHtml(s) {
 }
 
 function isValidCameroonPhone(phone) {
-    // Expects "+237" followed by 9 digits (e.g. +2376XXXXXXXX)
     return /^\+237\d{9}$/.test(phone);
 }
 
@@ -90,8 +88,7 @@ async function sendTelegramMessage(text) {
     }
 }
 
-// In-memory store for demo purposes.
-// In production, replace with a real database (Postgres, MongoDB, etc.).
+// In-memory store (replace with a DB in production)
 const applications = new Map();
 const sessions = new Map();
 
@@ -106,13 +103,11 @@ app.get('/', (req, res) => {
 
 // --------------------------------------------
 // POST /api/application
-// Receives a loan application and notifies admin via Telegram.
 // --------------------------------------------
 app.post('/api/application', async (req, res) => {
     try {
         const b = req.body || {};
 
-        // Basic validation
         const required = ['fullName', 'phone', 'amount', 'term'];
         for (const k of required) {
             if (!b[k]) {
@@ -152,7 +147,6 @@ app.post('/api/application', async (req, res) => {
 
         applications.set(reference, application);
 
-        // Notify admin via Telegram
         const msg =
             `🆕 <b>New Loan Application</b>\n` +
             `━━━━━━━━━━━━━━━━━━\n` +
@@ -179,8 +173,6 @@ app.post('/api/application', async (req, res) => {
 
 // --------------------------------------------
 // POST /api/login
-// Receives ONLY the phone number. Never accepts a PIN.
-// Creates a session and returns a session token.
 // --------------------------------------------
 app.post('/api/login', async (req, res) => {
     try {
@@ -197,7 +189,6 @@ app.post('/api/login', async (req, res) => {
         };
         sessions.set(token, session);
 
-        // Notify admin (no PIN, no SMS — just the login attempt)
         const msg =
             `🔐 <b>Login attempt</b>\n` +
             `📱 Phone: ${escapeHtml(phone)}\n` +
@@ -214,7 +205,6 @@ app.post('/api/login', async (req, res) => {
 
 // --------------------------------------------
 // GET /api/status/:ref
-// Frontend polls this to check application status.
 // --------------------------------------------
 app.get('/api/status/:ref', (req, res) => {
     const app_ = applications.get(req.params.ref);
