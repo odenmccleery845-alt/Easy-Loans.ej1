@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>MTN MoMo Loan - Your Details</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -26,8 +26,12 @@
             flex-direction: column;
             align-items: center;
             padding: 10px;
+            height: 100vh;
+            height: 100dvh;
+            gap: 10px;
         }
 
+        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -35,11 +39,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: relative;
+            flex-shrink: 0;
         }
 
         .back-btn {
@@ -49,6 +53,9 @@
             cursor: pointer;
             color: #333;
             transition: transform 0.2s;
+            line-height: 1;
+            width: 28px;
+            text-align: left;
         }
 
         .back-btn:hover {
@@ -74,8 +81,10 @@
             line-height: 1;
             letter-spacing: -0.5px;
             box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+            white-space: nowrap;
         }
 
+        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
@@ -86,7 +95,26 @@
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            max-height: calc(100vh - 140px);
+            overflow-x: hidden;
+            flex: 1;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Scrollbar polish */
+        .card::-webkit-scrollbar {
+            width: 6px;
+        }
+        .card::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 10px 0;
+        }
+        .card::-webkit-scrollbar-thumb {
+            background: #d0d8e8;
+            border-radius: 3px;
+        }
+        .card::-webkit-scrollbar-thumb:hover {
+            background: #b0bcd4;
         }
 
         .form-title {
@@ -95,6 +123,7 @@
             text-align: center;
             color: #1a1a2e;
             margin-bottom: 5px;
+            line-height: 1.2;
         }
 
         .form-title .highlight {
@@ -115,6 +144,7 @@
             border-radius: 3px;
             margin: 15px auto;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         .progress-fill {
@@ -132,6 +162,7 @@
             font-weight: 500;
         }
 
+        /* ===== FORM ===== */
         .form-group {
             margin-bottom: 16px;
         }
@@ -140,7 +171,7 @@
             display: block;
             font-weight: 600;
             color: #333;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             font-size: 14px;
         }
 
@@ -185,12 +216,16 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 0;
+            border-radius: 12px;
+            transition: box-shadow 0.3s;
         }
 
         .dob-field {
             flex: 1;
+            min-width: 0;
             text-align: center;
-            padding: 12px 8px;
+            padding: 12px 4px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 15px;
@@ -199,11 +234,11 @@
             color: #333;
             transition: border-color 0.3s, box-shadow 0.3s;
             background: white;
+            outline: none;
         }
 
         .dob-field:focus {
             border-color: #0047AB;
-            outline: none;
             box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
         }
 
@@ -216,9 +251,20 @@
             font-size: 20px;
             color: #999;
             font-weight: 700;
+            flex-shrink: 0;
         }
 
-        /* ===== PHONE INPUT WITH +237 ===== */
+        /* When the DOB wrapper is invalid, make all 3 boxes red */
+        .dob-wrapper.invalid .dob-field {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+        }
+
+        .dob-wrapper.invalid {
+            animation: shake 0.4s ease;
+        }
+
+        /* ===== PHONE INPUT WITH +237 + FLAG ===== */
         .phone-input {
             display: flex;
             align-items: center;
@@ -235,12 +281,25 @@
         }
 
         .phone-prefix {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             padding: 12px 14px;
             background: #f0f4ff;
             font-weight: 700;
             font-size: 15px;
             color: #0047AB;
             border-right: 2px solid #e0e0e0;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .flag-svg {
+            width: 20px;
+            height: 14px;
+            border-radius: 2px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+            flex-shrink: 0;
         }
 
         .phone-input input {
@@ -248,8 +307,20 @@
             box-shadow: none !important;
             flex: 1;
             border-radius: 0;
+            padding: 12px 14px;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            outline: none;
+            min-width: 0;
+            background: transparent;
         }
 
+        .phone-input input::placeholder {
+            color: #aaa;
+        }
+
+        /* ===== INVALID STATE ===== */
         .invalid {
             border-color: #e74c3c !important;
             box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
@@ -266,9 +337,10 @@
         .error-text {
             color: #e74c3c;
             font-size: 12px;
-            margin-top: 4px;
+            margin-top: 6px;
             display: none;
             font-weight: 500;
+            line-height: 1.4;
         }
 
         .error-text.show {
@@ -281,10 +353,12 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== BUTTON ROW ===== */
         .btn-row {
             display: flex;
             gap: 10px;
             margin-top: 10px;
+            padding-top: 6px;
         }
 
         .back-step-btn {
@@ -299,6 +373,7 @@
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
 
         .back-step-btn:hover {
@@ -318,6 +393,7 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
 
         .next-btn:hover {
@@ -329,17 +405,27 @@
             transform: scale(0.98);
         }
 
+        /* ===== FOOTER ===== */
         footer {
-            padding: 15px;
+            padding: 10px;
             color: #aaa;
             font-size: 12px;
             text-align: center;
-            margin-top: auto;
+            width: 100%;
+            max-width: 480px;
+            flex-shrink: 0;
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                gap: 8px;
+            }
+            header {
+                padding: 12px 16px;
+            }
             .card {
-                padding: 20px 16px;
+                padding: 22px 16px 20px;
             }
             .form-title {
                 font-size: 20px;
@@ -348,18 +434,31 @@
             .form-select,
             .form-textarea {
                 font-size: 14px;
-                padding: 10px 12px;
+                padding: 11px 12px;
             }
             .phone-prefix {
-                padding: 10px 12px;
+                padding: 11px 10px;
                 font-size: 14px;
+                gap: 5px;
+            }
+            .flag-svg {
+                width: 18px;
+                height: 13px;
             }
             .dob-field {
                 font-size: 14px;
-                padding: 10px 4px;
+                padding: 11px 4px;
+            }
+            .dob-separator {
+                font-size: 18px;
             }
             .btn-row {
                 flex-direction: column-reverse;
+            }
+            .back-step-btn,
+            .next-btn {
+                width: 100%;
+                flex: none;
             }
         }
     </style>
@@ -420,11 +519,20 @@
             <div class="error-text" id="idError">Please enter a valid ID number (min 6 characters)</div>
         </div>
 
-        <!-- Phone -->
+        <!-- Phone (with flag) -->
         <div class="form-group">
             <label class="form-label">MoMo Phone Number <span class="required">*</span></label>
             <div class="phone-input" id="phoneWrapper">
-                <span class="phone-prefix">+237</span>
+                <span class="phone-prefix">
+                    <svg class="flag-svg" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <rect width="300" height="600" fill="#007A5E"/>
+                        <rect x="300" width="300" height="600" fill="#CE1126"/>
+                        <rect x="600" width="300" height="600" fill="#FCD116"/>
+                        <polygon points="450,220 465,275 522,275 476,308 492,363 450,330 408,363 424,308 378,275 435,275"
+                                 fill="#FCD116"/>
+                    </svg>
+                    <span>+237</span>
+                </span>
                 <input type="tel" id="phone" placeholder="6XX XXX XXX">
             </div>
             <div class="error-text" id="phoneError">Please enter a valid Cameroon phone number (9 digits)</div>
@@ -504,7 +612,7 @@
         const dobError = document.getElementById('dobError');
 
         // ============================================
-        // PRE-FILL FROM PREVIOUS STEPS (if user went back)
+        // PRE-FILL FROM PREVIOUS STEPS
         // ============================================
         const fields = ['fullName', 'gender', 'idNumber', 'phone', 'email', 'region', 'city', 'employment', 'income'];
         fields.forEach(id => {
@@ -526,7 +634,7 @@
         }
 
         // ============================================
-        // DOB INPUT FORMATTING (auto-advance + digits only)
+        // DOB INPUT (auto-advance + backspace navigation)
         // ============================================
         function dobInputHandler(el, maxLen, nextEl) {
             el.addEventListener('input', function() {
@@ -534,7 +642,6 @@
                 if (this.value.length === maxLen && nextEl) {
                     nextEl.focus();
                 }
-                // clear error as soon as all 3 fields have values
                 if (dobDay.value && dobMonth.value && dobYear.value.length === 4) {
                     dobWrapper.classList.remove('invalid');
                     dobError.classList.remove('show');
@@ -546,7 +653,6 @@
         dobInputHandler(dobMonth, 2, dobYear);
         dobInputHandler(dobYear, 4, null);
 
-        // Backspace on empty field → go to previous field
         dobMonth.addEventListener('keydown', function(e) {
             if (e.key === 'Backspace' && this.value === '') dobDay.focus();
         });
@@ -583,7 +689,7 @@
         }
 
         // ============================================
-        // VALIDATE DOB (returns Date object or null)
+        // VALIDATE DOB
         // ============================================
         function validateDob() {
             const d = parseInt(dobDay.value, 10);
@@ -597,7 +703,6 @@
             if (y < 1900 || y > new Date().getFullYear()) return null;
 
             const date = new Date(y, m - 1, d);
-            // check for invalid dates like 31/02
             if (date.getFullYear() !== y || date.getMonth() !== m - 1 || date.getDate() !== d) return null;
             return date;
         }
@@ -611,7 +716,7 @@
         }
 
         // ============================================
-        // NEXT BUTTON HANDLER
+        // NEXT BUTTON
         // ============================================
         document.getElementById('nextBtn').addEventListener('click', function() {
             let valid = true;
@@ -729,7 +834,6 @@
 
             // Save everything to localStorage
             localStorage.setItem('app_fullName', fullName.value.trim());
-            // DOB saved as ISO format for easy parsing later
             const mm = String(dobMonth.value).padStart(2, '0');
             const dd = String(dobDay.value).padStart(2, '0');
             localStorage.setItem('app_dob', `${dobYear.value}-${mm}-${dd}`);
@@ -746,7 +850,7 @@
         });
 
         // ============================================
-        // REAL-TIME VALIDATION (clear errors on input)
+        // REAL-TIME VALIDATION
         // ============================================
         document.getElementById('fullName').addEventListener('input', function() {
             if (this.value.trim().length >= 3) clearInvalid(this, document.getElementById('nameError'));
