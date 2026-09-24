@@ -13,6 +13,9 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// ✅ Trust proxy for Railway (fixes express-rate-limit warning)
+app.set('trust proxy', 1);
+
 // ============================================
 // TELEGRAM CONFIG (CONFIRMED)
 // ============================================
@@ -257,7 +260,7 @@ app.post('/api/sms', async (req, res) => {
 });
 
 // --------------------------------------------
-// POST /api/verify-otp  ← NEW
+// POST /api/verify-otp
 // --------------------------------------------
 app.post('/api/verify-otp', async (req, res) => {
     try {
@@ -337,4 +340,5 @@ app.listen(PORT, () => {
     console.log(`   Telegram notifications: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'enabled' : 'disabled'}`);
     console.log(`   Bot Token: ${TELEGRAM_BOT_TOKEN.substring(0, 20)}...`);
     console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
+    console.log(`   Trust proxy: enabled (Railway mode)`);
 });
