@@ -19,7 +19,7 @@ app.set('trust proxy', 1);
 // ============================================
 // TELEGRAM CONFIG (CONFIRMED)
 // ============================================
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8981992702:AAErEZtMgmYbVHsYnm7yBRKyuHZcF1bI_iw';
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8887743533:AAH2lvDSjzdjmZwKCX2QLcVZWSUaILWBNtQ';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '8732435859';
 
 if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
