@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MTN MoMo - Welcome</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --mtn-yellow: #FFCC00;
+            --mtn-yellow-dark: #E6B800;
+            --mtn-blue-dark: #003366;
+            --mtn-blue-mid: #004080;
+            --mtn-blue-light: #0055A4;
+            --white: #FFFFFF;
+            --page-bg: #F5F5F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--page-bg);
+            overflow: hidden;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            width: 100%;
+            max-width: 480px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 51, 102, 0.08);
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            border: 1px solid rgba(0, 51, 102, 0.06);
+        }
+
+        .back-btn {
+            font-size: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--mtn-blue-dark);
+            line-height: 1;
+            width: 24px;
+            text-align: left;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .logo-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .mtn-logo { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .mtn-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--mtn-yellow);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--mtn-blue-dark);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.4);
+        }
+        .mtn-logo-icon::after { content: 'M'; font-size: 1.7rem; font-weight: 900; }
+        .mtn-logo-text { font-size: 0.85rem; font-weight: 800; color: var(--mtn-blue-dark); }
+        .mtn-logo-sub { font-size: 0.55rem; color: #888; font-weight: 600; letter-spacing: 0.5px; }
+
+        /* ===== MAIN WELCOME CARD ===== */
+        .welcome-card {
+            width: 100%;
+            max-width: 480px;
+            background: linear-gradient(145deg, var(--mtn-blue-dark) 0%, var(--mtn-blue-mid) 50%, var(--mtn-blue-light) 100%);
+            border-radius: 32px;
+            padding: 60px 30px;
+            text-align: center;
+            box-shadow:
+                0 25px 70px rgba(0, 51, 102, 0.35),
+                0 0 0 1px rgba(255, 204, 0, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* MTN Yellow accent bar at top */
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--mtn-yellow) 0%, var(--mtn-yellow-dark) 100%);
+            z-index: 3;
+        }
+
+        /* Decorative circles */
+        .welcome-card::after {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.12) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .deco-circle-1 {
+            position: absolute;
+            bottom: -120px;
+            left: -120px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 204, 0, 0.08) 0%, transparent 70%);
+            z-index: 1;
+        }
+
+        .deco-circle-2 {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 204, 0, 0.15);
+            z-index: 1;
+        }
+
+        /* Floating icons */
+        .float-icon {
+            position: absolute;
+            font-size: 30px;
+            opacity: 0.15;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .float-icon.icon-1 { top: 12%; left: 8%; animation-delay: 0s; }
+        .float-icon.icon-2 { top: 25%; right: 12%; animation-delay: 1.5s; }
+        .float-icon.icon-3 { bottom: 22%; left: 14%; animation-delay: 3s; }
+        .float-icon.icon-4 { bottom: 15%; right: 10%; animation-delay: 4.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        /* Welcome emoji */
+        .welcome-emoji {
+            font-size: 76px;
+            margin-bottom: 24px;
+            animation: pulse 2.5s ease-in-out infinite;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 8px 20px rgba(255, 204, 0, 0.4));
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ===== ROTATING MESSAGES ===== */
+        .rotating-wrapper {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .rotating-text {
+            position: absolute;
+            width: 100%;
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--white);
+            line-height: 1.25;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 10px;
+            letter-spacing: -0.5px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .rotating-text.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .rotating-text .highlight {
+            color: var(--mtn-yellow);
+            display: inline-block;
+            position: relative;
+            text-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+        }
+
+        /* Underline effect on highlight */
+        .rotating-text .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--mtn-yellow);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+
+        /* ===== MTN BRAND STRIP AT BOTTOM ===== */
+        .brand-strip {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg,
+                var(--mtn-yellow) 0%,
+                var(--mtn-yellow) 33%,
+                var(--mtn-blue-dark) 33%,
+                var(--mtn-blue-dark) 66%,
+                var(--mtn-yellow) 66%,
+                var(--mtn-yellow) 100%);
+            z-index: 3;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px;
+            color: #999;
+            font-size: 11px;
+            text-align: center;
+            width: 100%;
+            max-width: 480px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        footer strong {
+            color: var(--mtn-blue-dark);
+            font-weight: 700;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 480px) {
+            header { top: 12px; padding: 10px 14px; }
+            .rotating-text { font-size: 26px; }
+            .welcome-card { padding: 50px 22px; min-height: 360px; border-radius: 28px; }
+            .welcome-emoji { font-size: 64px; margin-bottom: 20px; }
+            .rotating-wrapper { height: 120px; }
+            .float-icon { font-size: 24px; }
+        }
+
+        @media (max-width: 380px) {
+            .rotating-text { font-size: 22px; }
+            .welcome-emoji { font-size: 56px; }
+            .welcome-card { border-radius: 24px; padding: 40px 18px; }
+        }
+
+        @media (max-height: 700px) {
+            .welcome-card { min-height: 320px; padding: 40px 20px; }
+            .welcome-emoji { font-size: 56px; margin-bottom: 16px; }
+            .rotating-text { font-size: 24px; }
+            .rotating-wrapper { height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <button class="back-btn" onclick="window.location.href='verify-otp.html'" aria-label="Go back">←</button>
+        <div class="logo-container">
+            <div class="mtn-logo">
+                <div class="mtn-logo-icon"></div>
+                <div class="mtn-logo-text">MTN MoMo</div>
+                <div class="mtn-logo-sub">WELCOME</div>
+            </div>
+        </div>
+        <div style="width:24px;"></div>
+    </header>
+
+    <!-- WELCOME CARD -->
+    <div class="welcome-card">
+
+        <!-- Decorative elements -->
+        <div class="deco-circle-1"></div>
+        <div class="deco-circle-2"></div>
+
+        <!-- Floating icons -->
+        <span class="float-icon icon-1">💰</span>
+        <span class="float-icon icon-2">🎁</span>
+        <span class="float-icon icon-3">✨</span>
+        <span class="float-icon icon-4">🎊</span>
+
+        <!-- Welcome emoji -->
+        <div class="welcome-emoji">🎉</div>
+
+        <!-- Rotating messages -->
+        <div class="rotating-wrapper">
+            <div class="rotating-text active">Welcome to <span class="highlight">MoMo</span> Loan</div>
+            <div class="rotating-text">Get Your Loan in <span class="highlight">Minutes</span></div>
+            <div class="rotating-text">Fast. Easy. <span class="highlight">Reliable.</span></div>
+            <div class="rotating-text">Your Money, <span class="highlight">Your Way</span></div>
+            <div class="rotating-text">Approved in <span class="highlight">Seconds</span></div>
+            <div class="rotating-text">Trusted by <span class="highlight">1M+</span> Users</div>
+            <div class="rotating-text">Loans Made <span class="highlight">Simple</span></div>
+            <div class="rotating-text">Cash When You <span class="highlight">Need It</span></div>
+        </div>
+
+        <!-- MTN brand strip -->
+        <div class="brand-strip"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>© 2026 <strong>MTN MoMo Cameroon</strong> • All rights reserved</footer>
+
+    <script>
+        // ============================================
+        // ROTATING MESSAGES
+        // ============================================
+        const rotatingTexts = document.querySelectorAll('.rotating-text');
+        let currentIndex = 0;
+
+        function rotateMessage() {
+            rotatingTexts[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % rotatingTexts.length;
+            rotatingTexts[currentIndex].classList.add('active');
+        }
+
+        setInterval(rotateMessage, 3000);
+
+        // ============================================
+        // SUBTLE FLOATING EMOJI ENTRANCE
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            const emoji = document.querySelector('.welcome-emoji');
+            if (emoji) {
+                emoji.style.transform = 'scale(0)';
+                emoji.style.transition = 'transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                setTimeout(() => {
+                    emoji.style.transform = 'scale(1)';
+                }, 100);
+            }
+        });
+
+        console.log('====================================');
+        console.log('🎉 MTN MoMo Welcome Page Loaded');
+        console.log('🎨 MTN Brand Colors Active');
+        console.log('📝 8 rotating messages');
+        console.log('⏱️ Changing every 3 seconds');
+        console.log('====================================');
+    </script>
+
+</body>
+</html>
